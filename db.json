@@ -29,6 +29,20 @@
       "password": "555",
       "name": "TOMA",
       "currency": "KZT"
+    },
+    {
+      "id": "27ea",
+      "email": "aru@gmail.com",
+      "password": "88888888",
+      "name": "Aruzhan",
+      "currency": "KZT"
+    },
+    {
+      "id": "6639",
+      "email": "mira@mail.ru",
+      "password": "555",
+      "name": "Mira",
+      "currency": "KZT"
     }
   ],
   "accounts": [
@@ -103,6 +117,54 @@
       "icon": "chart-line",
       "balance": 0,
       "createdAt": "2025-05-09T14:21:26.781Z"
+    },
+    {
+      "id": "9e37",
+      "userId": "27ea",
+      "name": "Кошелек",
+      "icon": "money-bill-wave",
+      "balance": 0,
+      "createdAt": "2025-05-09T15:10:25.034Z"
+    },
+    {
+      "id": "7a57",
+      "userId": "27ea",
+      "name": "Банковская карта",
+      "icon": "graduation-cap",
+      "balance": 44000,
+      "createdAt": "2025-05-09T15:10:25.034Z"
+    },
+    {
+      "id": "427b",
+      "userId": "27ea",
+      "name": "Инвестиции",
+      "icon": "chart-line",
+      "balance": 0,
+      "createdAt": "2025-05-09T15:10:25.034Z"
+    },
+    {
+      "id": "93eb",
+      "userId": "6639",
+      "name": "Кошелек",
+      "icon": "money-bill-wave",
+      "balance": 0,
+      "createdAt": "2025-05-09T17:01:50.250Z"
+    },
+    {
+      "id": "d8a6",
+      "userId": "6639",
+      "name": "Банковская карта",
+      "icon": "graduation-cap",
+      "balance": 0,
+      "createdAt": "2025-05-09T17:01:50.250Z"
+    },
+    {
+      "id": "fd0a",
+      "userId": "6639",
+      "name": "Инвестиции",
+      "icon": "chart-line",
+      "balance": 0,
+      "createdAt": "2025-05-09T17:01:50.250Z"
     }
   ],
   "transactions": [
@@ -192,6 +254,28 @@
       "comment": "",
       "type": "income",
       "createdAt": "2025-05-09T15:08:36.769Z"
+    },
+    {
+      "id": "896f",
+      "userId": "27ea",
+      "accountId": "7a57",
+      "categoryId": "scholarship",
+      "amount": 54000,
+      "date": "2025-05-09",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-09T16:58:49.638Z"
+    },
+    {
+      "id": "fed0",
+      "userId": "27ea",
+      "accountId": "7a57",
+      "categoryId": "products",
+      "amount": -10000,
+      "date": "2025-05-09",
+      "comment": "",
+      "type": "expense",
+      "createdAt": "2025-05-09T16:59:16.587Z"
     }
   ],
   "categories": [

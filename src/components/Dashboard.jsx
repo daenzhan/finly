@@ -98,6 +98,7 @@ export default function Dashboard() {
       // Отправка на сервер
       const response = await API.post('/transactions', newTransaction);
 
+      // ЧТОБЫ БНОВЛЯЛОСЬ В ДБ
       const accountToUpdate = accounts.find(acc => acc.id === formData.accountId);
       const newBalance = transactionType === 'income' 
         ? (accountToUpdate.balance || 0) + amount 
