@@ -25,14 +25,14 @@ export const registerUserThunk = createAsyncThunk(
       const defaultAccounts = [
         {
           userId,
-          name: "Зарплата",
+          name: "Кошелек",
           icon: "money-bill-wave",
           balance: 0,
           createdAt
         },
         {
           userId,
-          name: "Стипендия",
+          name: "Банковская карта",
           icon: "graduation-cap",
           balance: 0,
           createdAt

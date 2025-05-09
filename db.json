@@ -22,6 +22,13 @@
       "password": "555",
       "name": "Asel",
       "currency": "KZT"
+    },
+    {
+      "id": "b088",
+      "email": "toma_nnn@mail.ru",
+      "password": "555",
+      "name": "TOMA",
+      "currency": "KZT"
     }
   ],
   "accounts": [
@@ -72,162 +79,141 @@
       "icon": "graduation-cap",
       "balance": 0,
       "createdAt": "2025-05-09T13:34:38.132Z"
-    }
-  ],
-  "transactions": [],
-  "categories": [
-    {
-      "id": "bbf7",
-      "userId": "1ab3",
-      "name": "Продукты",
-      "icon": "shopping-basket",
-      "color": "#FF6384",
-      "type": "expense",
-      "createdAt": "2025-05-09T12:51:53.801Z"
     },
     {
-      "id": "ef7c",
-      "userId": "1ab3",
-      "name": "Развлечения",
-      "icon": "film",
-      "color": "#FF9F40",
-      "type": "expense",
-      "createdAt": "2025-05-09T12:51:53.804Z"
-    },
-    {
-      "id": "202d",
-      "userId": "1ab3",
-      "name": "Услуги",
-      "icon": "tools",
-      "color": "#8AC24A",
-      "type": "expense",
-      "createdAt": "2025-05-09T12:51:53.804Z"
-    },
-    {
-      "id": "e631",
-      "userId": "1ab3",
-      "name": "Еда вне дома",
-      "icon": "utensils",
-      "color": "#36A2EB",
-      "type": "expense",
-      "createdAt": "2025-05-09T12:51:53.802Z"
-    },
-    {
-      "id": "3d89",
-      "userId": "1ab3",
-      "name": "Зарплата",
+      "id": "c540",
+      "userId": "b088",
+      "name": "Кошелек",
       "icon": "money-bill-wave",
-      "color": "#2ECC71",
-      "type": "expense",
-      "createdAt": "2025-05-09T12:51:53.805Z"
+      "balance": 0,
+      "createdAt": "2025-05-09T14:21:26.781Z"
     },
     {
-      "id": "f294",
-      "userId": "1ab3",
-      "name": "Стипендия",
+      "id": "d28f",
+      "userId": "b088",
+      "name": "Банковская карта",
       "icon": "graduation-cap",
-      "color": "#3498DB",
-      "type": "expense",
-      "createdAt": "2025-05-09T12:51:53.805Z"
+      "balance": 500000,
+      "createdAt": "2025-05-09T14:21:26.781Z"
     },
     {
-      "id": "54b3",
-      "userId": "1ab3",
-      "name": "Транспорт",
-      "icon": "bus",
-      "color": "#FFCE56",
-      "type": "expense",
-      "createdAt": "2025-05-09T12:51:53.802Z"
-    },
-    {
-      "id": "1224",
-      "userId": "1ab3",
-      "name": "Покупки",
-      "icon": "shopping-bag",
-      "color": "#4BC0C0",
-      "type": "expense",
-      "createdAt": "2025-05-09T12:51:53.803Z"
-    },
-    {
-      "id": "7b62",
-      "userId": "1ab3",
+      "id": "62e1",
+      "userId": "b088",
       "name": "Инвестиции",
       "icon": "chart-line",
-      "color": "#9B59B6",
-      "type": "expense",
-      "createdAt": "2025-05-09T12:51:53.806Z"
+      "balance": 0,
+      "createdAt": "2025-05-09T14:21:26.781Z"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "2e00",
+      "userId": "eb37",
+      "accountId": "bd15",
+      "categoryId": "pension",
+      "amount": 50,
+      "date": "2025-05-09",
+      "comment": "",
+      "type": "income"
     },
     {
-      "id": "d7a0",
-      "userId": "1ab3",
-      "name": "Дом",
-      "icon": "home",
-      "color": "#9966FF",
-      "type": "expense",
-      "createdAt": "2025-05-09T12:51:53.803Z"
+      "id": "d72c",
+      "userId": "eb37",
+      "accountId": "bd15",
+      "categoryId": "salary",
+      "amount": 120,
+      "date": "2025-05-09",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-09T14:19:12.636Z"
     },
     {
-      "id": "ec6f",
-      "userId": "cd0e",
-      "name": "Продукты",
-      "icon": "shopping-basket",
-      "color": "#FF6384",
-      "type": "expense",
-      "createdAt": "2025-05-09T13:04:13.320Z"
+      "id": "f072",
+      "userId": "b088",
+      "accountId": "c540",
+      "categoryId": "scholarship",
+      "amount": 400000,
+      "date": "2025-05-09",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-09T14:21:46.784Z"
     },
     {
-      "id": "4191",
-      "userId": "cd0e",
-      "name": "Развлечения",
-      "icon": "film",
-      "color": "#FF9F40",
+      "id": "53ef",
+      "userId": "b088",
+      "accountId": "",
+      "categoryId": "",
+      "amount": 20000,
+      "date": "2025-05-09",
+      "comment": "",
       "type": "expense",
-      "createdAt": "2025-05-09T13:04:13.323Z"
+      "createdAt": "2025-05-09T14:22:00.686Z"
     },
     {
-      "id": "9d2a",
-      "userId": "cd0e",
-      "name": "Покупки",
-      "icon": "shopping-bag",
-      "color": "#4BC0C0",
+      "id": "69d1",
+      "userId": "b088",
+      "accountId": "c540",
+      "categoryId": "shopping",
+      "amount": -5000,
+      "date": "2025-05-09",
+      "comment": "",
       "type": "expense",
-      "createdAt": "2025-05-09T13:04:13.322Z"
+      "createdAt": "2025-05-09T14:31:55.828Z"
     },
     {
-      "id": "eb92",
-      "userId": "cd0e",
-      "name": "Еда вне дома",
-      "icon": "utensils",
-      "color": "#36A2EB",
-      "type": "expense",
-      "createdAt": "2025-05-09T13:04:13.321Z"
+      "id": "1614",
+      "userId": "b088",
+      "accountId": "d28f",
+      "categoryId": "scholarship",
+      "amount": 30000,
+      "date": "2025-05-09",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-09T14:41:46.481Z"
     },
     {
-      "id": "06e5",
-      "userId": "cd0e",
-      "name": "Дом",
-      "icon": "home",
-      "color": "#9966FF",
-      "type": "expense",
-      "createdAt": "2025-05-09T13:04:13.322Z"
+      "id": "4ab9",
+      "userId": "b088",
+      "accountId": "c540",
+      "categoryId": "pension",
+      "amount": 500,
+      "date": "2025-05-09",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-09T14:56:10.998Z"
     },
     {
-      "id": "ef5d",
-      "userId": "cd0e",
-      "name": "Услуги",
-      "icon": "tools",
-      "color": "#8AC24A",
-      "type": "expense",
-      "createdAt": "2025-05-09T13:04:13.323Z"
+      "id": "2075",
+      "userId": "b088",
+      "accountId": "d28f",
+      "categoryId": "pension",
+      "amount": 500000,
+      "date": "2025-05-09",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-09T15:08:36.769Z"
+    }
+  ],
+  "categories": [
+    {
+      "id": "salary",
+      "name": "Зарплата",
+      "type": "income"
     },
     {
-      "id": "ede0",
-      "userId": "cd0e",
-      "name": "Транспорт",
-      "icon": "bus",
-      "color": "#FFCE56",
-      "type": "expense",
-      "createdAt": "2025-05-09T13:04:13.321Z"
+      "id": "scholarship",
+      "name": "Стипендия",
+      "type": "income"
+    },
+    {
+      "id": "pension",
+      "name": "Пенсия",
+      "type": "income"
+    },
+    {
+      "id": "other_income",
+      "name": "Другой доход",
+      "type": "income"
     }
   ]
 }
