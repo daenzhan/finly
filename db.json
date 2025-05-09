@@ -1,116 +1,233 @@
 {
   "users": [
     {
-      "id": "4c77",
-      "email": "toma@gmail.com",
-      "password": "hashed_password",
-      "name": "Тома",
-      "currency": "RUB",
-      "createdAt": "2024-05-01T10:00:00Z"
-    },
-    {
-      "id": "4708",
-      "email": "queen_toma@gmail.com",
-      "password": "7777777",
-      "name": "Тома",
-      "currency": "KZT"
-    },
-    {
-      "id": "9e7c",
-      "email": "aru.nur@gmail.com",
-      "password": "888",
-      "name": "Аружан",
+      "id": "1ab3",
+      "email": "toma@mail.ru",
+      "password": "555",
+      "name": "Tomi",
       "currency": "KZT",
-      "createdAt": "2025-05-09T10:23:23.987Z"
+      "createdAt": "2025-05-09T12:51:53.778Z"
     },
     {
-      "id": "7467",
-      "email": "aselek@gmail.com",
-      "password": "777",
+      "id": "cd0e",
+      "email": "test@mail.ru",
+      "password": "11111111",
+      "name": "test",
+      "currency": "KZT",
+      "createdAt": "2025-05-09T13:04:13.296Z"
+    },
+    {
+      "id": "eb37",
+      "email": "asel@mail.ru",
+      "password": "555",
       "name": "Asel",
-      "currency": "KZT",
-      "createdAt": "2025-05-09T10:28:32.194Z"
+      "currency": "KZT"
     }
   ],
   "accounts": [
     {
-      "id": "acc1",
-      "userId": "4c77",
-      "name": "Основной счёт",
-      "balance": 1000,
-      "currency": "RUB",
-      "isDefault": true
+      "id": "7aad",
+      "userId": "cd0e",
+      "name": "Зарплата",
+      "icon": "money-bill-wave",
+      "balance": 0,
+      "createdAt": "2025-05-09T13:04:13.324Z"
     },
     {
-      "id": "b603",
-      "userId": "9e7c",
-      "name": "Основной счёт",
+      "id": "c74d",
+      "userId": "cd0e",
+      "name": "Стипендия",
+      "icon": "graduation-cap",
       "balance": 0,
-      "currency": "KZT",
-      "isDefault": true
+      "createdAt": "2025-05-09T13:04:13.324Z"
     },
     {
-      "id": "5c3f",
-      "userId": "9e7c",
-      "name": "Резервный счёт",
+      "id": "ec2e",
+      "userId": "cd0e",
+      "name": "Инвестиции",
+      "icon": "chart-line",
       "balance": 0,
-      "currency": "KZT",
-      "isDefault": false
+      "createdAt": "2025-05-09T13:04:13.325Z"
     },
     {
-      "id": "8127",
-      "userId": "9e7c",
-      "name": "Накопительный счёт",
+      "id": "bd15",
+      "userId": "eb37",
+      "name": "Зарплата",
+      "icon": "money-bill-wave",
       "balance": 0,
-      "currency": "KZT",
-      "isDefault": false
+      "createdAt": "2025-05-09T13:34:38.132Z"
     },
     {
-      "id": "d1ae",
-      "user_id": "7467",
-      "name": "Основной счёт",
+      "id": "b2fb",
+      "userId": "eb37",
+      "name": "Инвестиции",
+      "icon": "chart-line",
       "balance": 0,
-      "currency": "KZT",
-      "isDefault": true,
-      "createdAt": "2025-05-09T10:28:32.223Z"
+      "createdAt": "2025-05-09T13:34:38.132Z"
     },
     {
-      "id": "7ffc",
-      "user_id": "7467",
-      "name": "Резервный счёт",
+      "id": "1053",
+      "userId": "eb37",
+      "name": "Стипендия",
+      "icon": "graduation-cap",
       "balance": 0,
-      "currency": "KZT",
-      "isDefault": false,
-      "createdAt": "2025-05-09T10:28:32.223Z"
-    },
-    {
-      "id": "ac87",
-      "user_id": "7467",
-      "name": "Накопительный счёт",
-      "balance": 0,
-      "currency": "KZT",
-      "isDefault": false,
-      "createdAt": "2025-05-09T10:28:32.223Z"
+      "createdAt": "2025-05-09T13:34:38.132Z"
     }
   ],
-  "transactions": [
+  "transactions": [],
+  "categories": [
     {
-      "id": "tx1",
-      "userId": "4c77",
-      "accountId": "acc1",
+      "id": "bbf7",
+      "userId": "1ab3",
+      "name": "Продукты",
+      "icon": "shopping-basket",
+      "color": "#FF6384",
       "type": "expense",
-      "amount": 100,
-      "category": "Еда",
-      "date": "2024-05-20"
+      "createdAt": "2025-05-09T12:51:53.801Z"
     },
     {
-      "id": "tx2",
-      "userId": "1670",
-      "accountId": "acc2",
-      "type": "income",
-      "amount": 2000,
-      "category": "Зарплата",
-      "date": "2024-05-15"
+      "id": "ef7c",
+      "userId": "1ab3",
+      "name": "Развлечения",
+      "icon": "film",
+      "color": "#FF9F40",
+      "type": "expense",
+      "createdAt": "2025-05-09T12:51:53.804Z"
+    },
+    {
+      "id": "202d",
+      "userId": "1ab3",
+      "name": "Услуги",
+      "icon": "tools",
+      "color": "#8AC24A",
+      "type": "expense",
+      "createdAt": "2025-05-09T12:51:53.804Z"
+    },
+    {
+      "id": "e631",
+      "userId": "1ab3",
+      "name": "Еда вне дома",
+      "icon": "utensils",
+      "color": "#36A2EB",
+      "type": "expense",
+      "createdAt": "2025-05-09T12:51:53.802Z"
+    },
+    {
+      "id": "3d89",
+      "userId": "1ab3",
+      "name": "Зарплата",
+      "icon": "money-bill-wave",
+      "color": "#2ECC71",
+      "type": "expense",
+      "createdAt": "2025-05-09T12:51:53.805Z"
+    },
+    {
+      "id": "f294",
+      "userId": "1ab3",
+      "name": "Стипендия",
+      "icon": "graduation-cap",
+      "color": "#3498DB",
+      "type": "expense",
+      "createdAt": "2025-05-09T12:51:53.805Z"
+    },
+    {
+      "id": "54b3",
+      "userId": "1ab3",
+      "name": "Транспорт",
+      "icon": "bus",
+      "color": "#FFCE56",
+      "type": "expense",
+      "createdAt": "2025-05-09T12:51:53.802Z"
+    },
+    {
+      "id": "1224",
+      "userId": "1ab3",
+      "name": "Покупки",
+      "icon": "shopping-bag",
+      "color": "#4BC0C0",
+      "type": "expense",
+      "createdAt": "2025-05-09T12:51:53.803Z"
+    },
+    {
+      "id": "7b62",
+      "userId": "1ab3",
+      "name": "Инвестиции",
+      "icon": "chart-line",
+      "color": "#9B59B6",
+      "type": "expense",
+      "createdAt": "2025-05-09T12:51:53.806Z"
+    },
+    {
+      "id": "d7a0",
+      "userId": "1ab3",
+      "name": "Дом",
+      "icon": "home",
+      "color": "#9966FF",
+      "type": "expense",
+      "createdAt": "2025-05-09T12:51:53.803Z"
+    },
+    {
+      "id": "ec6f",
+      "userId": "cd0e",
+      "name": "Продукты",
+      "icon": "shopping-basket",
+      "color": "#FF6384",
+      "type": "expense",
+      "createdAt": "2025-05-09T13:04:13.320Z"
+    },
+    {
+      "id": "4191",
+      "userId": "cd0e",
+      "name": "Развлечения",
+      "icon": "film",
+      "color": "#FF9F40",
+      "type": "expense",
+      "createdAt": "2025-05-09T13:04:13.323Z"
+    },
+    {
+      "id": "9d2a",
+      "userId": "cd0e",
+      "name": "Покупки",
+      "icon": "shopping-bag",
+      "color": "#4BC0C0",
+      "type": "expense",
+      "createdAt": "2025-05-09T13:04:13.322Z"
+    },
+    {
+      "id": "eb92",
+      "userId": "cd0e",
+      "name": "Еда вне дома",
+      "icon": "utensils",
+      "color": "#36A2EB",
+      "type": "expense",
+      "createdAt": "2025-05-09T13:04:13.321Z"
+    },
+    {
+      "id": "06e5",
+      "userId": "cd0e",
+      "name": "Дом",
+      "icon": "home",
+      "color": "#9966FF",
+      "type": "expense",
+      "createdAt": "2025-05-09T13:04:13.322Z"
+    },
+    {
+      "id": "ef5d",
+      "userId": "cd0e",
+      "name": "Услуги",
+      "icon": "tools",
+      "color": "#8AC24A",
+      "type": "expense",
+      "createdAt": "2025-05-09T13:04:13.323Z"
+    },
+    {
+      "id": "ede0",
+      "userId": "cd0e",
+      "name": "Транспорт",
+      "icon": "bus",
+      "color": "#FFCE56",
+      "type": "expense",
+      "createdAt": "2025-05-09T13:04:13.321Z"
     }
   ]
 }

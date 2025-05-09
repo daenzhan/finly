@@ -18,6 +18,39 @@ export const registerUserThunk = createAsyncThunk(
       };
       
       const response = await API.post('/users', newUser);
+      const userId = response.data.id;
+      const createdAt = new Date().toISOString();
+
+      // Создаем три стандартных счета для нового пользователя
+      const defaultAccounts = [
+        {
+          userId,
+          name: "Зарплата",
+          icon: "money-bill-wave",
+          balance: 0,
+          createdAt
+        },
+        {
+          userId,
+          name: "Стипендия",
+          icon: "graduation-cap",
+          balance: 0,
+          createdAt
+        },
+        {
+          userId,
+          name: "Инвестиции",
+          icon: "chart-line",
+          balance: 0,
+          createdAt
+        }
+      ];
+
+      // Сохраняем все счета в API
+      await Promise.all(
+        defaultAccounts.map(account => API.post('/accounts', account))
+      );
+
       return response.data;
     } catch (err) {
       return rejectWithValue('Ошибка регистрации');
