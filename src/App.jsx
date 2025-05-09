@@ -1,16 +1,26 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Register from './components/Register';
 import Login from './components/Login';
+import Dashboard from './components/Dashboard';
 
-export default function App() {
+// App.jsx
+import PrivateRoute from './components/PrivateRoute';
+
+function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        {/* позже добавим dashboard */}
-      </Routes>
-    </Router>
+    <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} /> {/* Перенаправление */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route
+        path="/dashboard/:userId"
+        element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        }
+      />
+    </Routes>
   );
 }
+export default App;

@@ -10,13 +10,14 @@ export default function Login() {
   const navigate = useNavigate();
   const { error, loading } = useSelector((state) => state.auth);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const result = await dispatch(loginUserThunk({ email, password }));
-    if (loginUserThunk.fulfilled.match(result)) {
-      navigate('/dashboard');
-    }
-  };
+  // features/auth/Login.jsx
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const result = await dispatch(loginUserThunk({ email, password }));
+  if (loginUserThunk.fulfilled.match(result)) {
+    navigate(`/dashboard/${result.payload.id}`); // Перенаправляем с userId
+  }
+};
 
   return (
     <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4">

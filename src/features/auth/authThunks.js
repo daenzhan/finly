@@ -3,14 +3,22 @@ import API from '../../api/api';
 
 export const registerUserThunk = createAsyncThunk(
   'auth/register',
-  async ({ email, password }, { rejectWithValue }) => {
+  async ({ email, password, name, currency }, { rejectWithValue }) => {
     try {
       const existing = await API.get(`/users?email=${email}`);
       if (existing.data.length > 0) {
         return rejectWithValue('Пользователь уже существует');
       }
-      await API.post('/users', { email, password });
-      return;
+      
+      const newUser = {
+        email,
+        password, // В реальном приложении нужно хешировать!
+        name: name || '',
+        currency: currency || 'RUB',
+      };
+      
+      const response = await API.post('/users', newUser);
+      return response.data;
     } catch (err) {
       return rejectWithValue('Ошибка регистрации');
     }

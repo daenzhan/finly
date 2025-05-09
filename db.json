@@ -3,12 +3,114 @@
     {
       "id": "4c77",
       "email": "toma@gmail.com",
-      "password": "888"
+      "password": "hashed_password",
+      "name": "Тома",
+      "currency": "RUB",
+      "createdAt": "2024-05-01T10:00:00Z"
     },
     {
-      "id": "1670",
+      "id": "4708",
       "email": "queen_toma@gmail.com",
-      "password": "7777777"
+      "password": "7777777",
+      "name": "Тома",
+      "currency": "KZT"
+    },
+    {
+      "id": "9e7c",
+      "email": "aru.nur@gmail.com",
+      "password": "888",
+      "name": "Аружан",
+      "currency": "KZT",
+      "createdAt": "2025-05-09T10:23:23.987Z"
+    },
+    {
+      "id": "7467",
+      "email": "aselek@gmail.com",
+      "password": "777",
+      "name": "Asel",
+      "currency": "KZT",
+      "createdAt": "2025-05-09T10:28:32.194Z"
+    }
+  ],
+  "accounts": [
+    {
+      "id": "acc1",
+      "userId": "4c77",
+      "name": "Основной счёт",
+      "balance": 1000,
+      "currency": "RUB",
+      "isDefault": true
+    },
+    {
+      "id": "b603",
+      "userId": "9e7c",
+      "name": "Основной счёт",
+      "balance": 0,
+      "currency": "KZT",
+      "isDefault": true
+    },
+    {
+      "id": "5c3f",
+      "userId": "9e7c",
+      "name": "Резервный счёт",
+      "balance": 0,
+      "currency": "KZT",
+      "isDefault": false
+    },
+    {
+      "id": "8127",
+      "userId": "9e7c",
+      "name": "Накопительный счёт",
+      "balance": 0,
+      "currency": "KZT",
+      "isDefault": false
+    },
+    {
+      "id": "d1ae",
+      "user_id": "7467",
+      "name": "Основной счёт",
+      "balance": 0,
+      "currency": "KZT",
+      "isDefault": true,
+      "createdAt": "2025-05-09T10:28:32.223Z"
+    },
+    {
+      "id": "7ffc",
+      "user_id": "7467",
+      "name": "Резервный счёт",
+      "balance": 0,
+      "currency": "KZT",
+      "isDefault": false,
+      "createdAt": "2025-05-09T10:28:32.223Z"
+    },
+    {
+      "id": "ac87",
+      "user_id": "7467",
+      "name": "Накопительный счёт",
+      "balance": 0,
+      "currency": "KZT",
+      "isDefault": false,
+      "createdAt": "2025-05-09T10:28:32.223Z"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "tx1",
+      "userId": "4c77",
+      "accountId": "acc1",
+      "type": "expense",
+      "amount": 100,
+      "category": "Еда",
+      "date": "2024-05-20"
+    },
+    {
+      "id": "tx2",
+      "userId": "1670",
+      "accountId": "acc2",
+      "type": "income",
+      "amount": 2000,
+      "category": "Зарплата",
+      "date": "2024-05-15"
     }
   ]
 }
