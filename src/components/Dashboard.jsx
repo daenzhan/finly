@@ -335,6 +335,45 @@ export default function Dashboard() {
       >
         +
       </button>
+
+      <div className="mb-8 p-5 bg-white rounded-xl shadow-md">
+  <h2 className="text-xl font-semibold mb-4">История транзакций</h2>
+  <div className="space-y-3">
+    {transactions
+      .sort((a, b) => new Date(b.date) - new Date(a.date)) // Сортировка по дате
+      .map(tx => {
+        const category = [...incomeCategories, ...expenseCategories]
+          .find(cat => cat.id === tx.categoryId);
+        const account = accounts.find(acc => acc.id === tx.accountId);
+        
+        return (
+          <div 
+            key={tx.id} 
+            className="p-3 bg-gray-50 rounded-lg flex items-center justify-between"
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">{category?.icon || '💸'}</span>
+              <div>
+                <div className="font-medium">{category?.name || 'Неизвестно'}</div>
+                <div className="text-sm text-gray-500">
+                  {account?.name} • {new Date(tx.date).toLocaleDateString()}
+                </div>
+                {tx.comment && (
+                  <div className="text-sm text-gray-500 mt-1">"{tx.comment}"</div>
+                )}
+              </div>
+            </div>
+            <div className={`text-lg font-semibold ${
+              tx.type === 'income' ? 'text-green-600' : 'text-red-600'
+            }`}>
+              {tx.type === 'income' ? '+' : '-'}
+              {Math.abs(tx.amount).toFixed(2)} {getCurrencySymbol()}
+            </div>
+          </div>
+        );
+      })}
+  </div>
+</div>
       
       {/* Модальное окно для добавления транзакции */}
       {showModal && (
@@ -369,6 +408,7 @@ export default function Dashboard() {
                 </button>
               </div>
             </div>
+            
 
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
@@ -462,6 +502,7 @@ export default function Dashboard() {
             </form>
           </div>
         </div>
+        
       )}
     </div>
   );

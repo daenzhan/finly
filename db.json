@@ -147,7 +147,7 @@
       "userId": "6639",
       "name": "Кошелек",
       "icon": "money-bill-wave",
-      "balance": 0,
+      "balance": 10000000,
       "createdAt": "2025-05-09T17:01:50.250Z"
     },
     {
@@ -276,6 +276,17 @@
       "comment": "",
       "type": "expense",
       "createdAt": "2025-05-09T16:59:16.587Z"
+    },
+    {
+      "id": "cdaa",
+      "userId": "6639",
+      "accountId": "93eb",
+      "categoryId": "salary",
+      "amount": 10000000,
+      "date": "2025-05-10",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-10T07:20:57.819Z"
     }
   ],
   "categories": [
