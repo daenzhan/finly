@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import API from '../api/api';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchAccounts } from '../redux/actions/accountActions';
+import { fetchTransactions, addTransaction } from '../redux/actions/transactionActions';
 
 const currencySymbols = {
   RUB: '₽',
@@ -10,7 +11,6 @@ const currencySymbols = {
   KZT: '₸',
 };
 
-// Категории доходов
 const incomeCategories = [
   { id: 'salary', name: 'Зарплата', icon: '💼' },
   { id: 'scholarship', name: 'Стипендия', icon: '🎓' },
@@ -18,7 +18,6 @@ const incomeCategories = [
   { id: 'other_income', name: 'Другое', icon: '💰' }
 ];
 
-// Категории расходов
 const expenseCategories = [
   { id: 'transport', name: 'Транспорт', icon: '🚕' },
   { id: 'products', name: 'Продукты', icon: '🍎' },
@@ -29,9 +28,7 @@ const expenseCategories = [
 
 export default function Dashboard() {
   const { userId } = useParams();
-  const [accounts, setAccounts] = useState([]);
-  const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
   const [transactionType, setTransactionType] = useState('income');
   const [formData, setFormData] = useState({
@@ -41,103 +38,55 @@ export default function Dashboard() {
     date: new Date().toISOString().split('T')[0],
     comment: ''
   });
+
+  // Redux state
   const { user } = useSelector((state) => state.auth);
+  const {
+    data: accounts,
+    loading: accountsLoading,
+    error: accountsError
+  } = useSelector((state) => state.accounts);
+  const {
+    data: transactions,
+    loading: transactionsLoading,
+    error: transactionsError
+  } = useSelector((state) => state.transactions);
 
-  // Загрузка данных
+  const loading = accountsLoading || transactionsLoading;
+  const error = accountsError || transactionsError;
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [accs, txs] = await Promise.all([
-          API.get(`/accounts?userId=${userId}`),
-          API.get(`/transactions?userId=${userId}`)
-        ]);
-        
-        setAccounts(accs.data || accs);
-        setTransactions(txs.data || txs);
-      } catch (error) {
-        console.error("Ошибка загрузки данных:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [userId]);
+    dispatch(fetchAccounts(userId));
+    dispatch(fetchTransactions(userId));
+  }, [dispatch, userId]);
 
-  // Обработчик изменений формы
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Отправка формы
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const amount = parseFloat(formData.amount);
-      if (isNaN(amount) || amount <= 0) {
-        alert('Введите корректную сумму');
-        return;
-      }
-
-      const finalAmount = transactionType === 'income' ? amount : -amount;
-
-      const newTransaction = {
-        userId,
-        accountId: formData.accountId,
-        categoryId: formData.categoryId,
-        amount: finalAmount,
-        date: formData.date,
-        comment: formData.comment,
-        type: transactionType,
-        createdAt: new Date().toISOString()
-      };
-
-      // Отправка на сервер
-      const response = await API.post('/transactions', newTransaction);
-
-      // ЧТОБЫ БНОВЛЯЛОСЬ В ДБ
-      const accountToUpdate = accounts.find(acc => acc.id === formData.accountId);
-      const newBalance = transactionType === 'income' 
-        ? (accountToUpdate.balance || 0) + amount 
-        : (accountToUpdate.balance || 0) - amount;
-  
-      const updatedAccount = await API.patch(`/accounts/${formData.accountId}`, {
-        balance: Math.max(0, newBalance)
-      });
+    const amount = parseFloat(formData.amount);
     
-  
-      // 3. Обновляем состояние
-      setAccounts(prev => 
-        prev.map(acc => 
-          acc.id === formData.accountId ? updatedAccount.data : acc
-        )
-      );
-      
-      // Обновление состояния
-      setTransactions(prev => [...prev, response.data]);
-      
-      
-      // Обновление баланса счета
-      const updatedAccounts = accounts.map(acc => {
-        if (acc.id === formData.accountId) {
-          const newBalance = transactionType === 'income' 
-            ? (acc.balance || 0) + amount 
-            : (acc.balance || 0) - amount;
-            
-          return {
-            ...acc,
-            balance: Math.max(0, newBalance) // Не позволяем балансу уйти в минус
-          };
-        }
-        return acc;
-      });
-      
-      setAccounts(updatedAccounts);
+    if (isNaN(amount) || amount <= 0) {
+      alert('Введите корректную сумму');
+      return;
+    }
 
-      // Закрытие модального окна и сброс формы
+    const newTransaction = {
+      userId,
+      accountId: formData.accountId,
+      categoryId: formData.categoryId,
+      amount: transactionType === 'income' ? amount : -amount,
+      date: formData.date,
+      comment: formData.comment,
+      type: transactionType,
+      createdAt: new Date().toISOString()
+    };
+
+    try {
+      await dispatch(addTransaction(newTransaction));
       setShowModal(false);
       setFormData({
         accountId: '',
@@ -151,30 +100,21 @@ export default function Dashboard() {
     }
   };
 
-  // Расчет доходов и расходов
   const calculateTransactions = () => {
     const incomeTransactions = transactions.filter(tx => tx.type === 'income');
     const expenseTransactions = transactions.filter(tx => tx.type === 'expense');
-    
-    // Общий доход
+
     const totalIncome = incomeTransactions.reduce(
       (sum, tx) => sum + (parseFloat(tx.amount) || 0), 0
     );
-    
-    // Общий расход
     const totalExpense = expenseTransactions.reduce(
       (sum, tx) => sum + Math.abs(parseFloat(tx.amount) || 0), 0
     );
-    
-    // Доходы по категориям
+
     const incomesByCategory = incomeCategories.map(category => {
-      const categoryTransactions = incomeTransactions.filter(
-        tx => tx.categoryId === category.id
-      );
-      
-      const categoryTotal = categoryTransactions.reduce(
-        (sum, tx) => sum + (parseFloat(tx.amount) || 0), 0
-      );
+      const categoryTotal = incomeTransactions
+        .filter(tx => tx.categoryId === category.id)
+        .reduce((sum, tx) => sum + (parseFloat(tx.amount) || 0), 0);
       
       return {
         ...category,
@@ -183,15 +123,10 @@ export default function Dashboard() {
       };
     });
 
-    // Расходы по категориям
     const expensesByCategory = expenseCategories.map(category => {
-      const categoryTransactions = expenseTransactions.filter(
-        tx => tx.categoryId === category.id
-      );
-      
-      const categoryTotal = categoryTransactions.reduce(
-        (sum, tx) => sum + Math.abs(parseFloat(tx.amount) || 0), 0
-      );
+      const categoryTotal = expenseTransactions
+        .filter(tx => tx.categoryId === category.id)
+        .reduce((sum, tx) => sum + Math.abs(parseFloat(tx.amount) || 0), 0);
       
       return {
         ...category,
@@ -206,11 +141,13 @@ export default function Dashboard() {
   const { totalIncome, totalExpense, incomesByCategory, expensesByCategory } = calculateTransactions();
   const balance = totalIncome - totalExpense;
 
-  if (!user || loading) return <div className="p-4">Загрузка...</div>;
-
-  const getCurrencySymbol = (currency = user.currency) => {
+  const getCurrencySymbol = (currency = user?.currency) => {
     return currencySymbols[currency] || currency;
   };
+
+  if (loading) return <div className="p-4">Загрузка...</div>;
+  if (error) return <div className="p-4 text-red-500">Ошибка: {error}</div>;
+  if (!user) return <div className="p-4">Пользователь не авторизован</div>;
 
   return (
     <div className="p-4 max-w-3xl mx-auto">
@@ -328,15 +265,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Кнопка добавления транзакции */}
-      <button 
-        onClick={() => setShowModal(true)}
-        className="fixed bottom-6 right-6 bg-blue-500 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl hover:bg-blue-600 transition-colors"
-      >
-        +
-      </button>
-
-      <div className="mb-8 p-5 bg-white rounded-xl shadow-md">
+        <div className="mb-8 p-5 bg-white rounded-xl shadow-md">
   <h2 className="text-xl font-semibold mb-4">История транзакций</h2>
   <div className="space-y-3">
     {transactions
@@ -374,6 +303,14 @@ export default function Dashboard() {
       })}
   </div>
 </div>
+
+      {/* Кнопка добавления транзакции */}
+      <button 
+        onClick={() => setShowModal(true)}
+        className="fixed bottom-6 right-6 bg-blue-500 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl hover:bg-blue-600 transition-colors"
+      >
+        +
+      </button>
       
       {/* Модальное окно для добавления транзакции */}
       {showModal && (
@@ -408,7 +345,6 @@ export default function Dashboard() {
                 </button>
               </div>
             </div>
-            
 
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
@@ -502,7 +438,6 @@ export default function Dashboard() {
             </form>
           </div>
         </div>
-        
       )}
     </div>
   );

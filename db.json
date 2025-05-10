@@ -155,7 +155,7 @@
       "userId": "6639",
       "name": "Банковская карта",
       "icon": "graduation-cap",
-      "balance": 0,
+      "balance": 10000,
       "createdAt": "2025-05-09T17:01:50.250Z"
     },
     {
@@ -287,6 +287,17 @@
       "comment": "",
       "type": "income",
       "createdAt": "2025-05-10T07:20:57.819Z"
+    },
+    {
+      "id": "ef66",
+      "userId": "6639",
+      "accountId": "d8a6",
+      "categoryId": "salary",
+      "amount": 10000,
+      "date": "2025-05-10",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-10T09:08:10.163Z"
     }
   ],
   "categories": [
