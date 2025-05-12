@@ -20,14 +20,28 @@ const defaultExpenseCategories = [
   { id: 'default_other_expense', name: 'Другое', icon: '💸', color: '#3F51B5', type: 'expense' }
 ];
 
+const EMOJI_GROUPS = {
+  'Еда': ['🍎', '🍔', '🍕', '🍟', '🌮', '🍣', '🍜', '🍦', '☕', '🍺'],
+  'Транспорт': ['🚗', '🚕', '🚲', '✈️', '🚆', '🚢', '🛵', '🚀'],
+  'Финансы': ['💰', '💵', '💳', '🏦', '📈', '💲'],
+  'Развлечения': ['🎬', '🎮', '🎧', '🎤', '🎭', '🎲'],
+  'Покупки': ['🛍️', '👕', '👠', '🛒', '🎁'],
+  'Здоровье': ['💊', '🏥', '🚑', '🩺', '💉'],
+  'Образование': ['📚', '🎓', '✏️', '📝', '🏫'],
+  'Дом': ['🏠', '🛋️', '🛏️', '🚿', '🍳'],
+  'Другое': ['❤️', '⭐', '🎯', '🔑', '⏰']
+};
+
 export default function CategoriesPage() {
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
+  const [showCustomIconInput, setShowCustomIconInput] = useState(false);
   const [newCategory, setNewCategory] = useState({
     name: '',
     type: 'expense',
-    icon: '💰',
-    color: '#4CAF50'
+    icon: '💰', 
+    color: '#4CAF50',
+    customIcon: '' 
   });
 
   const { user } = useSelector((state) => state.auth);
@@ -48,18 +62,30 @@ export default function CategoriesPage() {
 
   const handleAddCategory = async (e) => {
     e.preventDefault();
+    
+    if (!newCategory.icon) {
+      toast.error('Выберите иконку');
+      return;
+    }
+  
     try {
       await dispatch(addCategory({
         ...newCategory,
-        userId: user.id
+        userId: user.id,
+        // Убедимся, что сохраняем именно выбранную иконку
+        icon: newCategory.icon 
       }));
+      
       setShowModal(false);
       setNewCategory({
         name: '',
         type: 'expense',
         icon: '💰',
-        color: '#4CAF50'
+        color: '#4CAF50',
+        customIcon: ''
       });
+      setShowCustomIconInput(false);
+      
       toast.success('Категория добавлена');
     } catch (error) {
       toast.error('Не удалось добавить категорию');
@@ -220,32 +246,90 @@ export default function CategoriesPage() {
               </div>
 
               <div className="mb-4">
-                <label className="block mb-2 font-medium">Иконка:</label>
+            <label className="block mb-2 font-medium">Иконка:</label>
+            
+            {!showCustomIconInput ? (
+              <>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {Object.entries(EMOJI_GROUPS).map(([group, icons]) => (
+                    <details key={group} className="border rounded-lg overflow-hidden">
+                      <summary className="px-3 py-2 bg-gray-100 cursor-pointer">
+                        {group}
+                      </summary>
+                      <div className="grid grid-cols-5 gap-2 p-2">
+                        {icons.map(emoji => (
+                          <button
+                            type="button"
+                            key={emoji}
+                            onClick={() => setNewCategory({...newCategory, icon: emoji})}
+                            className={`p-2 text-2xl hover:bg-gray-100 rounded ${
+                              newCategory.icon === emoji ? 'ring-2 ring-blue-500' : ''
+                            }`}
+                          >
+                            {emoji}
+                          </button>
+                        ))}
+                      </div>
+                    </details>
+                  ))}
+                </div>
+                
+                <button
+                  type="button"
+                  onClick={() => setShowCustomIconInput(true)}
+                  className="text-sm text-blue-500 hover:underline"
+                >
+                  + Своя иконка (эмоджи)
+                </button>
+              </>
+            ) : (
+              <div className="flex items-center gap-2">
                 <input
                   type="text"
-                  value={newCategory.icon}
-                  onChange={(e) => setNewCategory({...newCategory, icon: e.target.value})}
-                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
+                  value={newCategory.customIcon}
+                  onChange={(e) => setNewCategory({
+                    ...newCategory, 
+                    customIcon: e.target.value,
+                    icon: e.target.value
+                  })}
+                  className="flex-1 p-2 border rounded"
+                  placeholder="Введите эмоджи"
                   maxLength="2"
                 />
-                <p className="text-sm text-gray-500 mt-1">Введите эмодзи (например: 🍎, 🚕, 💰)</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowCustomIconInput(false);
+                    setNewCategory({...newCategory, customIcon: ''});
+                  }}
+                  className="p-2 text-gray-500 hover:text-gray-700"
+                >
+                  ×
+                </button>
               </div>
+            )}
+          </div>
 
-              <div className="mb-4">
-                <label className="block mb-2 font-medium">Цвет:</label>
-                <div className="flex items-center gap-4">
-                  <input
-                    type="color"
-                    value={newCategory.color}
-                    onChange={(e) => setNewCategory({...newCategory, color: e.target.value})}
-                    className="w-16 h-12"
-                  />
-                  <span className="p-2 rounded" style={{ backgroundColor: newCategory.color }}>
-                    {newCategory.icon} Пример
-                  </span>
-                </div>
-              </div>
+<div className="mb-4">
+  <label className="block mb-2 font-medium">Цвет:</label>
+  <div className="flex items-center gap-4">
+    <input
+      type="color"
+      value={newCategory.color}
+      onChange={(e) => setNewCategory({...newCategory, color: e.target.value})}
+      className="w-16 h-12"
+    />
+    <span 
+      className="p-2 rounded text-xl"
+      style={{ 
+        backgroundColor: newCategory.color + '20',
+        color: newCategory.color
+      }}
+    >
+      {newCategory.icon} Пример
+    </span>
+  </div>
+</div>
 
               <button
                 type="submit"

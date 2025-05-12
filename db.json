@@ -1066,6 +1066,23 @@
       "icon": "💰",
       "color": "#4c5cae",
       "userId": "7437"
+    },
+    {
+      "id": "cab9",
+      "name": "лекарство",
+      "type": "expense",
+      "icon": "💊",
+      "color": "#4CAF50",
+      "userId": "7437"
+    },
+    {
+      "id": "d30d",
+      "name": "сестра",
+      "type": "income",
+      "icon": "❤️",
+      "color": "#ae4c5b",
+      "customIcon": "",
+      "userId": "7437"
     }
   ]
 }
