@@ -1,36 +1,6 @@
 {
   "users": [
     {
-      "id": "1ab3",
-      "email": "toma@mail.ru",
-      "password": "555",
-      "name": "Tomi",
-      "currency": "KZT",
-      "createdAt": "2025-05-09T12:51:53.778Z"
-    },
-    {
-      "id": "cd0e",
-      "email": "test@mail.ru",
-      "password": "11111111",
-      "name": "test",
-      "currency": "KZT",
-      "createdAt": "2025-05-09T13:04:13.296Z"
-    },
-    {
-      "id": "eb37",
-      "email": "asel@mail.ru",
-      "password": "555",
-      "name": "Asel",
-      "currency": "KZT"
-    },
-    {
-      "id": "b088",
-      "email": "toma_nnn@mail.ru",
-      "password": "555",
-      "name": "TOMA",
-      "currency": "KZT"
-    },
-    {
       "id": "27ea",
       "email": "aru@gmail.com",
       "password": "88888888",
@@ -42,6 +12,76 @@
       "email": "mira@mail.ru",
       "password": "555",
       "name": "Mira",
+      "currency": "KZT"
+    },
+    {
+      "id": "bd9d",
+      "email": "ttmira@mail.com",
+      "password": "555",
+      "name": "Tamara",
+      "currency": "KZT"
+    },
+    {
+      "id": "0048",
+      "email": "tamara@mail.com",
+      "password": "555",
+      "name": "mira",
+      "currency": "KZT"
+    },
+    {
+      "id": "2fee",
+      "email": "aselt@mail.com",
+      "password": "555",
+      "name": "Asel",
+      "currency": "KZT"
+    },
+    {
+      "id": "fe29",
+      "email": "aru@mail.com",
+      "password": "555",
+      "name": "Aruzhan",
+      "currency": "KZT"
+    },
+    {
+      "id": "58fc",
+      "email": "tom@mail.com",
+      "password": "555",
+      "name": "",
+      "currency": "KZT"
+    },
+    {
+      "id": "fbe2",
+      "email": "as@mail.com",
+      "password": "555",
+      "name": "Asel",
+      "currency": "KZT"
+    },
+    {
+      "id": "609e",
+      "email": "ast@mail.com",
+      "password": "555",
+      "name": "Asel",
+      "currency": "KZT"
+    },
+    {
+      "id": "88c1",
+      "email": "tomi@mail.com",
+      "password": "555",
+      "name": "Tamara",
+      "currency": "KZT"
+    },
+    {
+      "id": "2159",
+      "email": "tomis@mail.com",
+      "password": "555",
+      "name": "tomis",
+      "currency": "KZT"
+    },
+    {
+      "id": "524b",
+      "email": "arusha@mail.com",
+      "password": "555",
+      "name": "arusha",
       "currency": "KZT"
     }
   ],
@@ -165,6 +205,276 @@
       "icon": "chart-line",
       "balance": 0,
       "createdAt": "2025-05-09T17:01:50.250Z"
+    },
+    {
+      "id": "1672",
+      "userId": "bd9d",
+      "name": "Кошелек",
+      "icon": "money-bill-wave",
+      "balance": 54000,
+      "createdAt": "2025-05-10T11:00:41.813Z"
+    },
+    {
+      "id": "6ef4",
+      "userId": "bd9d",
+      "name": "Банковская карта",
+      "icon": "graduation-cap",
+      "balance": 10000,
+      "createdAt": "2025-05-10T11:00:41.813Z"
+    },
+    {
+      "id": "af08",
+      "userId": "bd9d",
+      "name": "Инвестиции",
+      "icon": "chart-line",
+      "balance": 0,
+      "createdAt": "2025-05-10T11:00:41.813Z"
+    },
+    {
+      "id": "9275",
+      "userId": "0048",
+      "name": "Кошелек",
+      "icon": "money-bill-wave",
+      "balance": 29999.96,
+      "createdAt": "2025-05-10T15:36:50.173Z"
+    },
+    {
+      "id": "f68a",
+      "userId": "0048",
+      "name": "Банковская карта",
+      "icon": "graduation-cap",
+      "balance": 49000,
+      "createdAt": "2025-05-10T15:36:50.173Z"
+    },
+    {
+      "id": "2ed8",
+      "userId": "0048",
+      "name": "Инвестиции",
+      "icon": "chart-line",
+      "balance": 60000,
+      "createdAt": "2025-05-10T15:36:50.173Z"
+    },
+    {
+      "id": "a2f3",
+      "userId": "2fee",
+      "name": "Кошелек",
+      "icon": "money-bill-wave",
+      "balance": 64000,
+      "createdAt": "2025-05-10T18:49:09.676Z"
+    },
+    {
+      "id": "583b",
+      "userId": "2fee",
+      "name": "Банковская карта",
+      "icon": "graduation-cap",
+      "balance": -10000,
+      "createdAt": "2025-05-10T18:49:09.676Z"
+    },
+    {
+      "id": "a03c",
+      "userId": "2fee",
+      "name": "Инвестиции",
+      "icon": "chart-line",
+      "balance": 0,
+      "createdAt": "2025-05-10T18:49:09.676Z"
+    },
+    {
+      "id": "9aba",
+      "userId": "fe29",
+      "name": "Кошелек",
+      "icon": "money-bill-wave",
+      "balance": 74000,
+      "createdAt": "2025-05-11T07:39:28.631Z"
+    },
+    {
+      "id": "9035",
+      "userId": "fe29",
+      "name": "Банковская карта",
+      "icon": "graduation-cap",
+      "balance": 0.07,
+      "createdAt": "2025-05-11T07:39:28.631Z"
+    },
+    {
+      "id": "70c5",
+      "userId": "fe29",
+      "name": "Инвестиции",
+      "icon": "chart-line",
+      "balance": 0,
+      "createdAt": "2025-05-11T07:39:28.631Z"
+    },
+    {
+      "id": "a64b",
+      "userId": "58fc",
+      "name": "Кошелек",
+      "icon": "money-bill-wave",
+      "balance": -7999.99,
+      "createdAt": "2025-05-11T07:59:14.625Z"
+    },
+    {
+      "id": "9aff",
+      "userId": "58fc",
+      "name": "Инвестиции",
+      "icon": "chart-line",
+      "balance": 0,
+      "createdAt": "2025-05-11T07:59:14.625Z"
+    },
+    {
+      "id": "35a1",
+      "userId": "58fc",
+      "name": "Банковская карта",
+      "icon": "graduation-cap",
+      "balance": 10000,
+      "createdAt": "2025-05-11T07:59:14.625Z"
+    },
+    {
+      "id": "e4a0",
+      "userId": "fbe2",
+      "name": "Кошелек",
+      "icon": "money-bill-wave",
+      "balance": -0.01,
+      "createdAt": "2025-05-11T08:17:13.466Z"
+    },
+    {
+      "id": "a710",
+      "userId": "fbe2",
+      "name": "Инвестиции",
+      "icon": "chart-line",
+      "balance": 0,
+      "createdAt": "2025-05-11T08:17:13.466Z"
+    },
+    {
+      "id": "9e13",
+      "userId": "fbe2",
+      "name": "Банковская карта",
+      "icon": "graduation-cap",
+      "balance": 64000,
+      "createdAt": "2025-05-11T08:17:13.466Z"
+    },
+    {
+      "id": "1513",
+      "userId": "609e",
+      "name": "Кошелек",
+      "icon": "money-bill-wave",
+      "balance": 20000,
+      "createdAt": "2025-05-11T09:59:22.312Z"
+    },
+    {
+      "id": "7eea",
+      "userId": "609e",
+      "name": "Инвестиции",
+      "icon": "chart-line",
+      "balance": 0,
+      "createdAt": "2025-05-11T09:59:22.312Z"
+    },
+    {
+      "id": "f957",
+      "userId": "609e",
+      "name": "Банковская карта",
+      "icon": "graduation-cap",
+      "balance": 44000,
+      "createdAt": "2025-05-11T09:59:22.312Z"
+    },
+    {
+      "id": "161a",
+      "userId": "88c1",
+      "name": "Кошелек",
+      "icon": "money-bill-wave",
+      "balance": 0
+    },
+    {
+      "id": "ea30",
+      "userId": "88c1",
+      "name": "Банковская карта",
+      "icon": "credit-card",
+      "balance": 0
+    },
+    {
+      "id": "6f5d",
+      "userId": "88c1",
+      "name": "Инвестиции",
+      "icon": "chart-line",
+      "balance": 0
+    },
+    {
+      "id": "0227",
+      "userId": "2159",
+      "name": "Кошелек",
+      "icon": "money-bill-wave",
+      "balance": 0
+    },
+    {
+      "id": "0ae9",
+      "userId": "2159",
+      "name": "Банковская карта",
+      "icon": "credit-card",
+      "balance": 0
+    },
+    {
+      "id": "d4db",
+      "userId": "2159",
+      "name": "Инвестиции",
+      "icon": "chart-line",
+      "balance": 0
+    },
+    {
+      "id": "4e3a",
+      "name": "Кошелек",
+      "icon": "money-bill-wave",
+      "balance": 10000,
+      "userId": "524b",
+      "createdAt": "2025-05-11T17:11:40.992Z"
+    },
+    {
+      "id": "ab49",
+      "name": "Банковская карта",
+      "icon": "credit-card",
+      "balance": 113000,
+      "userId": "524b",
+      "createdAt": "2025-05-11T17:11:40.992Z"
+    },
+    {
+      "id": "1fd8",
+      "name": "Инвестиции",
+      "icon": "chart-line",
+      "balance": 60000,
+      "userId": "524b",
+      "createdAt": "2025-05-11T17:11:40.992Z"
+    },
+    {
+      "id": "f0fc",
+      "name": "halyk",
+      "icon": "wallet",
+      "balance": 5555,
+      "currency": "KZT",
+      "userId": "524b",
+      "createdAt": "2025-05-11T19:52:03.551Z"
+    },
+    {
+      "id": "5629",
+      "name": "kaspi",
+      "icon": "wallet",
+      "balance": 25000,
+      "currency": "KZT",
+      "userId": "524b",
+      "createdAt": "2025-05-11T19:54:46.071Z"
+    },
+    {
+      "id": "3f11",
+      "name": "freedom",
+      "icon": "wallet",
+      "balance": 500,
+      "currency": "EUR",
+      "userId": "524b",
+      "createdAt": "2025-05-11T19:57:03.395Z"
+    },
+    {
+      "id": "d34c",
+      "name": "bcc",
+      "icon": "wallet",
+      "balance": 800,
+      "currency": "USD",
+      "userId": "524b",
+      "createdAt": "2025-05-11T19:57:44.042Z"
     }
   ],
   "transactions": [
@@ -172,7 +482,7 @@
       "id": "2e00",
       "userId": "eb37",
       "accountId": "bd15",
-      "categoryId": "pension",
+      "categoryId": null,
       "amount": 50,
       "date": "2025-05-09",
       "comment": "",
@@ -182,7 +492,7 @@
       "id": "d72c",
       "userId": "eb37",
       "accountId": "bd15",
-      "categoryId": "salary",
+      "categoryId": null,
       "amount": 120,
       "date": "2025-05-09",
       "comment": "",
@@ -193,7 +503,7 @@
       "id": "f072",
       "userId": "b088",
       "accountId": "c540",
-      "categoryId": "scholarship",
+      "categoryId": null,
       "amount": 400000,
       "date": "2025-05-09",
       "comment": "",
@@ -226,7 +536,7 @@
       "id": "1614",
       "userId": "b088",
       "accountId": "d28f",
-      "categoryId": "scholarship",
+      "categoryId": null,
       "amount": 30000,
       "date": "2025-05-09",
       "comment": "",
@@ -237,7 +547,7 @@
       "id": "4ab9",
       "userId": "b088",
       "accountId": "c540",
-      "categoryId": "pension",
+      "categoryId": null,
       "amount": 500,
       "date": "2025-05-09",
       "comment": "",
@@ -248,7 +558,7 @@
       "id": "2075",
       "userId": "b088",
       "accountId": "d28f",
-      "categoryId": "pension",
+      "categoryId": null,
       "amount": 500000,
       "date": "2025-05-09",
       "comment": "",
@@ -259,7 +569,7 @@
       "id": "896f",
       "userId": "27ea",
       "accountId": "7a57",
-      "categoryId": "scholarship",
+      "categoryId": null,
       "amount": 54000,
       "date": "2025-05-09",
       "comment": "",
@@ -281,7 +591,7 @@
       "id": "cdaa",
       "userId": "6639",
       "accountId": "93eb",
-      "categoryId": "salary",
+      "categoryId": null,
       "amount": 10000000,
       "date": "2025-05-10",
       "comment": "",
@@ -292,34 +602,384 @@
       "id": "ef66",
       "userId": "6639",
       "accountId": "d8a6",
-      "categoryId": "salary",
+      "categoryId": null,
       "amount": 10000,
       "date": "2025-05-10",
       "comment": "",
       "type": "income",
       "createdAt": "2025-05-10T09:08:10.163Z"
+    },
+    {
+      "id": "9ba7",
+      "userId": "bd9d",
+      "accountId": "6ef4",
+      "categoryId": null,
+      "amount": 10000,
+      "date": "2025-05-10",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-10T14:19:30.170Z"
+    },
+    {
+      "id": "1f80",
+      "userId": "bd9d",
+      "accountId": "1672",
+      "categoryId": null,
+      "amount": 54000,
+      "date": "2025-05-10",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-10T15:00:51.052Z"
+    },
+    {
+      "id": "42b1",
+      "userId": "0048",
+      "accountId": "9275",
+      "categoryId": "default_scholarship",
+      "amount": 54000,
+      "date": "2025-05-10",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-10T15:37:22.950Z"
+    },
+    {
+      "id": "1873",
+      "userId": "0048",
+      "accountId": "f68a",
+      "categoryId": "default_salary",
+      "amount": 12000,
+      "date": "2025-05-10",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-10T15:37:48.830Z"
+    },
+    {
+      "id": "b634",
+      "userId": "0048",
+      "accountId": "f68a",
+      "categoryId": "default_scholarship",
+      "amount": 500000,
+      "date": "2025-05-10",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-10T15:39:18.409Z"
+    },
+    {
+      "id": "f879",
+      "userId": "0048",
+      "accountId": "f68a",
+      "categoryId": "default_products",
+      "amount": -70000,
+      "date": "2025-05-10",
+      "comment": "",
+      "type": "expense",
+      "createdAt": "2025-05-10T15:41:49.652Z"
+    },
+    {
+      "id": "3a67",
+      "userId": "0048",
+      "accountId": "2ed8",
+      "categoryId": "default_pension",
+      "amount": 60000,
+      "date": "2025-05-10",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-10T15:45:23.998Z"
+    },
+    {
+      "id": "e6aa",
+      "userId": "2fee",
+      "accountId": "a2f3",
+      "categoryId": "default_salary",
+      "amount": 10000,
+      "date": "2025-05-10",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-10T18:49:57.865Z"
+    },
+    {
+      "id": "fa14",
+      "userId": "2fee",
+      "accountId": "a2f3",
+      "categoryId": "default_scholarship",
+      "amount": 54000,
+      "date": "2025-05-10",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-10T18:50:17.513Z"
+    },
+    {
+      "id": "c9c8",
+      "userId": "fe29",
+      "accountId": "9aba",
+      "categoryId": "default_scholarship",
+      "amount": 54000,
+      "date": "2025-05-11",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-11T07:39:54.025Z"
+    },
+    {
+      "id": "7f69",
+      "userId": "fe29",
+      "accountId": "9aba",
+      "categoryId": "default_salary",
+      "amount": 10000,
+      "date": "2025-05-11",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-11T07:40:14.199Z"
+    },
+    {
+      "id": "7e65",
+      "userId": "fe29",
+      "accountId": "9aba",
+      "categoryId": "default_products",
+      "amount": -10000,
+      "date": "2025-05-11",
+      "comment": "",
+      "type": "expense",
+      "createdAt": "2025-05-11T07:40:27.797Z"
+    },
+    {
+      "id": "6a08",
+      "userId": "fe29",
+      "accountId": "9aba",
+      "categoryId": "default_other_income",
+      "amount": 20000,
+      "date": "2025-05-11",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-11T07:53:31.700Z"
+    },
+    {
+      "id": "38ed",
+      "userId": "58fc",
+      "accountId": "35a1",
+      "categoryId": "default_salary",
+      "amount": 10000,
+      "date": "2025-05-11",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-11T07:59:46.454Z"
+    },
+    {
+      "id": "2a49",
+      "userId": "58fc",
+      "accountId": "a64b",
+      "categoryId": "default_products",
+      "amount": -5000,
+      "date": "2025-05-11",
+      "comment": "",
+      "type": "expense",
+      "createdAt": "2025-05-11T08:00:07.796Z"
+    },
+    {
+      "id": "2cd3",
+      "userId": "58fc",
+      "accountId": "a64b",
+      "categoryId": "default_shopping",
+      "amount": -3000,
+      "date": "2025-05-11",
+      "comment": "",
+      "type": "expense",
+      "createdAt": "2025-05-11T08:08:51.726Z"
+    },
+    {
+      "id": "092e",
+      "userId": "fbe2",
+      "accountId": "9e13",
+      "categoryId": "default_scholarship",
+      "amount": 54000,
+      "date": "2025-05-11",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-11T08:17:38.237Z"
+    },
+    {
+      "id": "196e",
+      "userId": "fbe2",
+      "accountId": "9e13",
+      "categoryId": "default_salary",
+      "amount": 10000,
+      "date": "2025-05-11",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-11T08:17:53.276Z"
+    },
+    {
+      "id": "b985",
+      "userId": "609e",
+      "accountId": "f957",
+      "categoryId": "default_scholarship",
+      "amount": 54000,
+      "date": "2025-05-11",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-11T09:59:52.045Z"
+    },
+    {
+      "id": "078b",
+      "userId": "609e",
+      "accountId": "1513",
+      "categoryId": "default_salary",
+      "amount": 10000,
+      "date": "2025-05-11",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-11T10:00:15.425Z"
+    },
+    {
+      "id": "7a63",
+      "userId": "609e",
+      "accountId": "f957",
+      "categoryId": "default_products",
+      "amount": -10000,
+      "date": "2025-05-11",
+      "comment": "",
+      "type": "expense",
+      "createdAt": "2025-05-11T10:00:43.666Z"
+    },
+    {
+      "id": "ced2",
+      "userId": "609e",
+      "accountId": "1513",
+      "categoryId": "default_pension",
+      "amount": 60000,
+      "date": "2025-05-11",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-11T10:18:02.492Z"
+    },
+    {
+      "id": "dc0e",
+      "userId": "609e",
+      "accountId": "1513",
+      "categoryId": "default_shopping",
+      "amount": -50000,
+      "date": "2025-05-11",
+      "comment": "",
+      "type": "expense",
+      "createdAt": "2025-05-11T11:13:47.177Z"
+    },
+    {
+      "id": "d453",
+      "userId": "524b",
+      "accountId": "ab49",
+      "categoryId": "default_products",
+      "amount": -5000,
+      "date": "2025-05-11",
+      "comment": "",
+      "type": "expense",
+      "createdAt": "2025-05-11T18:47:37.720Z"
+    },
+    {
+      "id": "a79a",
+      "userId": "524b",
+      "accountId": "ab49",
+      "categoryId": "default_scholarship",
+      "amount": 54000,
+      "date": "2025-05-11",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-11T18:48:46.550Z"
+    },
+    {
+      "id": "6437",
+      "userId": "524b",
+      "accountId": "ab49",
+      "categoryId": "17eb",
+      "amount": 80000,
+      "date": "2025-05-11",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-11T18:58:36.502Z"
+    },
+    {
+      "id": "9262",
+      "userId": "524b",
+      "accountId": "1fd8",
+      "categoryId": "default_pension",
+      "amount": 60000,
+      "date": "2025-05-11",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-11T18:59:15.035Z"
+    },
+    {
+      "id": "9654",
+      "userId": "524b",
+      "accountId": "5629",
+      "categoryId": "17eb",
+      "amount": 50000,
+      "date": "2025-05-12",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-11T21:11:45.770Z"
+    },
+    {
+      "id": "e8c3",
+      "userId": "524b",
+      "accountId": "5629",
+      "categoryId": "default_shopping",
+      "amount": -30000,
+      "date": "2025-05-12",
+      "comment": "",
+      "type": "expense",
+      "createdAt": "2025-05-11T21:13:30.809Z"
+    },
+    {
+      "id": "7090",
+      "userId": "524b",
+      "accountId": "ab49",
+      "categoryId": "d428",
+      "amount": -10000,
+      "date": "2025-05-11",
+      "comment": "",
+      "type": "expense",
+      "createdAt": "2025-05-11T21:34:45.319Z"
     }
   ],
   "categories": [
     {
-      "id": "salary",
-      "name": "Зарплата",
-      "type": "income"
+      "id": "71c2",
+      "name": "дом",
+      "type": "expense",
+      "icon": "🏠",
+      "color": "#384275",
+      "userId": "bd9d"
     },
     {
-      "id": "scholarship",
-      "name": "Стипендия",
-      "type": "income"
+      "id": "555d",
+      "name": "мама",
+      "type": "income",
+      "icon": "💰",
+      "color": "#4CAF50",
+      "userId": "bd9d"
     },
     {
-      "id": "pension",
-      "name": "Пенсия",
-      "type": "income"
+      "id": "a6b9",
+      "name": "горы",
+      "type": "expense",
+      "icon": "⛰️",
+      "color": "#4CAF50",
+      "userId": "0048"
     },
     {
-      "id": "other_income",
-      "name": "Другой доход",
-      "type": "income"
+      "id": "17eb",
+      "name": "мама",
+      "type": "income",
+      "icon": "💰",
+      "color": "#274fa0",
+      "userId": "524b"
+    },
+    {
+      "id": "d428",
+      "name": "игры",
+      "type": "expense",
+      "icon": "🎮",
+      "color": "#784cae",
+      "userId": "524b"
     }
   ]
 }

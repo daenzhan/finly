@@ -1,17 +1,16 @@
-// // store.js
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from '../features/auth/authSlice';
-// Импортируем новые редьюсеры
+import authReducer from '../auth/authSlice';
 import accountReducer from '../redux/reducers/accountReducer';
 import transactionReducer from '../redux/reducers/transactionReducer';
+import categoryReducer from '../redux/reducers/categoryReducer';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    accounts: accountReducer,    // Добавляем редьюсер для счетов
-    transactions: transactionReducer // Добавляем редьюсер для транзакций
+    accounts: accountReducer,
+    transactions: transactionReducer,
+    categories: categoryReducer
   },
-  // Опционально: можно добавить middleware и другие настройки
   middleware: (getDefaultMiddleware) => 
     getDefaultMiddleware({
       serializableCheck: false

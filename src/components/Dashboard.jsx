@@ -1,8 +1,16 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams,Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchAccounts } from '../redux/actions/accountActions';
-import { fetchTransactions, addTransaction } from '../redux/actions/transactionActions';
+import { Money } from '../utils';
+import { fetchAccounts,addAccount } from '../redux/actions/accountActions';
+import {
+  fetchTransactions,
+  addTransaction,
+  updateTransaction,
+  deleteTransaction
+} from '../redux/actions/transactionActions';
+import { fetchCategories, addCategory, deleteCategory } from '../redux/actions/categoryActions';
+import { toast } from 'react-toastify';
 
 const currencySymbols = {
   RUB: '₽',
@@ -11,26 +19,48 @@ const currencySymbols = {
   KZT: '₸',
 };
 
-const incomeCategories = [
-  { id: 'salary', name: 'Зарплата', icon: '💼' },
-  { id: 'scholarship', name: 'Стипендия', icon: '🎓' },
-  { id: 'pension', name: 'Пенсия', icon: '👵' },
-  { id: 'other_income', name: 'Другое', icon: '💰' }
+const defaultIncomeCategories = [
+  { id: 'default_salary', name: 'Зарплата', icon: '💼', color: '#4CAF50', type: 'income' },
+  { id: 'default_scholarship', name: 'Стипендия', icon: '🎓', color: '#8BC34A', type: 'income' },
+  { id: 'default_pension', name: 'Пенсия', icon: '👵', color: '#CDDC39', type: 'income' },
+  { id: 'default_other_income', name: 'Другое', icon: '💰', color: '#FFC107', type: 'income' }
 ];
 
-const expenseCategories = [
-  { id: 'transport', name: 'Транспорт', icon: '🚕' },
-  { id: 'products', name: 'Продукты', icon: '🍎' },
-  { id: 'shopping', name: 'Покупки', icon: '🛍️' },
-  { id: 'entertainment', name: 'Развлечения', icon: '🎬' },
-  { id: 'other_expense', name: 'Другое', icon: '💸' }
+const defaultExpenseCategories = [
+  { id: 'default_transport', name: 'Транспорт', icon: '🚕', color: '#F44336', type: 'expense' },
+  { id: 'default_products', name: 'Продукты', icon: '🍎', color: '#E91E63', type: 'expense' },
+  { id: 'default_shopping', name: 'Покупки', icon: '🛍️', color: '#9C27B0', type: 'expense' },
+  { id: 'default_entertainment', name: 'Развлечения', icon: '🎬', color: '#673AB7', type: 'expense' },
+  { id: 'default_other_expense', name: 'Другое', icon: '💸', color: '#3F51B5', type: 'expense' }
 ];
 
 export default function Dashboard() {
   const { userId } = useParams();
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [showAccountModal, setShowAccountModal] = useState(false);
   const [transactionType, setTransactionType] = useState('income');
+  const [editingTransaction, setEditingTransaction] = useState(null);
+  const [dateRange, setDateRange] = useState({
+    start: new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0],
+    end: new Date().toISOString().split('T')[0]
+  });
+  
+  const [newCategory, setNewCategory] = useState({
+    name: '',
+    type: 'expense',
+    icon: '💰',
+    color: '#4CAF50'
+  });
+  
+  const [newAccount, setNewAccount] = useState({
+    name: '',
+    icon: 'wallet',
+    balance: 0,
+    currency: 'RUB'
+  });
+
   const [formData, setFormData] = useState({
     accountId: '',
     categoryId: '',
@@ -51,91 +81,247 @@ export default function Dashboard() {
     loading: transactionsLoading,
     error: transactionsError
   } = useSelector((state) => state.transactions);
+  const {
+    data: categories,
+    loading: categoriesLoading,
+    error: categoriesError
+  } = useSelector((state) => state.categories);
 
-  const loading = accountsLoading || transactionsLoading;
-  const error = accountsError || transactionsError;
+  const loading = accountsLoading || transactionsLoading || categoriesLoading;
+  const error = accountsError || transactionsError || categoriesError;
 
   useEffect(() => {
-    dispatch(fetchAccounts(userId));
-    dispatch(fetchTransactions(userId));
-  }, [dispatch, userId]);
+    if (user?.id) {
+      dispatch(fetchAccounts(user.id));
+      dispatch(fetchTransactions(user.id));
+      dispatch(fetchCategories(user.id));
+    }
+  }, [dispatch, user?.id]);
+
+  // Объединяем стандартные и пользовательские категории
+  const userIncomeCategories = categories?.filter(cat => cat.type === 'income') || [];
+  const userExpenseCategories = categories?.filter(cat => cat.type === 'expense') || [];
+
+  const incomeCategories = [...defaultIncomeCategories, ...userIncomeCategories];
+  const expenseCategories = [...defaultExpenseCategories, ...userExpenseCategories];
+
+  // Фильтрация транзакций по дате
+  const filteredTransactions = transactions?.filter(tx => {
+    const txDate = new Date(tx.date);
+    return txDate >= new Date(dateRange.start) && txDate <= new Date(dateRange.end);
+  }) || [];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const resetForm = () => {
+    setFormData({
+      accountId: '',
+      categoryId: '',
+      amount: '',
+      date: new Date().toISOString().split('T')[0],
+      comment: ''
+    });
+    setTransactionType('income');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const amount = parseFloat(formData.amount);
     
+    const amount = parseFloat(formData.amount);
     if (isNaN(amount) || amount <= 0) {
-      alert('Введите корректную сумму');
+      toast.error('Введите корректную сумму');
       return;
     }
-
+  
+    const signedAmount = transactionType === 'income' ? amount : -amount;
+  
     const newTransaction = {
-      userId,
+      userId: user.id,
+      accountId: formData.accountId,
+      categoryId: formData.categoryId,
+      amount: signedAmount,
+      date: formData.date,
+      comment: formData.comment,
+      type: transactionType,
+      createdAt: new Date().toISOString()
+    };
+  
+    try {
+      await dispatch(addTransaction(newTransaction));
+      setShowModal(false);
+      resetForm();
+      toast.success('Транзакция успешно добавлена');
+    } catch (error) {
+      toast.error('Не удалось добавить транзакцию');
+    }
+  };
+
+  const handleEditTransaction = (tx) => {
+    setEditingTransaction(tx);
+    setTransactionType(tx.type);
+    setFormData({
+      accountId: tx.accountId,
+      categoryId: tx.categoryId,
+      amount: Math.abs(tx.amount).toString(),
+      date: tx.date.split('T')[0],
+      comment: tx.comment || ''
+    });
+    setShowModal(true);
+  };
+
+  const handleUpdateTransaction = async (e) => {
+    e.preventDefault();
+    
+    const amount = parseFloat(formData.amount);
+    if (isNaN(amount) || amount <= 0) {
+      toast.error('Введите корректную сумму');
+      return;
+    }
+  
+    const updatedTransaction = {
+      id: editingTransaction.id,
+      userId: editingTransaction.userId,
       accountId: formData.accountId,
       categoryId: formData.categoryId,
       amount: transactionType === 'income' ? amount : -amount,
       date: formData.date,
       comment: formData.comment,
       type: transactionType,
-      createdAt: new Date().toISOString()
+      createdAt: editingTransaction.createdAt
     };
-
+  
     try {
-      await dispatch(addTransaction(newTransaction));
+      await dispatch(updateTransaction(updatedTransaction));
       setShowModal(false);
-      setFormData({
-        accountId: '',
-        categoryId: '',
-        amount: '',
-        date: new Date().toISOString().split('T')[0],
-        comment: ''
-      });
+      setEditingTransaction(null);
+      resetForm();
+      toast.success('Транзакция обновлена');
     } catch (error) {
-      console.error("Ошибка при создании транзакции:", error);
+      toast.error('Не удалось обновить транзакцию');
+    }
+  };
+
+  const handleDeleteTransaction = async (txId) => {
+    if (window.confirm('Вы уверены, что хотите удалить эту транзакцию?')) {
+      try {
+        await dispatch(deleteTransaction(txId));
+        toast.success('Транзакция удалена');
+      } catch (error) {
+        toast.error(error.message || 'Не удалось удалить транзакцию');
+      }
+    }
+  };
+
+  const handleAddCategory = async (e) => {
+    e.preventDefault();
+    try {
+      await dispatch(addCategory({
+        ...newCategory,
+        userId: user.id
+      }));
+      setShowCategoryModal(false);
+      setNewCategory({
+        name: '',
+        type: 'expense',
+        icon: '💰',
+        color: '#4CAF50'
+      });
+      toast.success('Категория добавлена');
+    } catch (error) {
+      toast.error('Не удалось добавить категорию');
+    }
+  };
+
+  const handleAddAccount = async (e) => {
+    e.preventDefault();
+    try {
+      await dispatch(addAccount({
+        ...newAccount,
+        userId: user.id,
+        createdAt: new Date().toISOString()
+      }));
+      setShowAccountModal(false);
+      setNewAccount({
+        name: '',
+        icon: 'wallet',
+        balance: 0,
+        currency: user?.currency || 'RUB'
+      });
+      toast.success('Счет успешно добавлен');
+    } catch (error) {
+      console.error("Ошибка при создании счета:", error);
+      toast.error(error.response?.data?.message || 'Не удалось добавить счет');
+    }
+  };
+
+  const handleDeleteCategory = async (categoryId) => {
+    const confirmMessage = `Вы уверены, что хотите удалить эту категорию? 
+      ${defaultIncomeCategories.concat(defaultExpenseCategories).some(c => c.id === categoryId) 
+        ? 'Это стандартная категория, она будет скрыта.' 
+        : 'Все связанные транзакции останутся без категории.'}`;
+    
+    if (window.confirm(confirmMessage)) {
+      try {
+        await dispatch(deleteCategory(categoryId));
+        toast.success('Категория удалена');
+      } catch (error) {
+        toast.error(error.message || 'Не удалось удалить категорию');
+      }
     }
   };
 
   const calculateTransactions = () => {
-    const incomeTransactions = transactions.filter(tx => tx.type === 'income');
-    const expenseTransactions = transactions.filter(tx => tx.type === 'expense');
-
-    const totalIncome = incomeTransactions.reduce(
-      (sum, tx) => sum + (parseFloat(tx.amount) || 0), 0
-    );
-    const totalExpense = expenseTransactions.reduce(
-      (sum, tx) => sum + Math.abs(parseFloat(tx.amount) || 0), 0
-    );
-
+    if (!filteredTransactions || !Array.isArray(filteredTransactions)) {
+      return {
+        totalIncome: 0,
+        totalExpense: 0,
+        incomesByCategory: [],
+        expensesByCategory: []
+      };
+    }
+  
+    const incomeTransactions = filteredTransactions.filter(tx => tx.type === 'income');
+    const expenseTransactions = filteredTransactions.filter(tx => tx.type === 'expense');
+  
+    // Доходы по категориям
     const incomesByCategory = incomeCategories.map(category => {
       const categoryTotal = incomeTransactions
         .filter(tx => tx.categoryId === category.id)
-        .reduce((sum, tx) => sum + (parseFloat(tx.amount) || 0), 0);
+        .reduce((sum, tx) => sum + (tx.amount || 0), 0);
       
       return {
         ...category,
         total: categoryTotal,
-        percentage: totalIncome > 0 ? Math.round((categoryTotal / totalIncome) * 100) : 0
+        percentage: incomeTransactions.length > 0 
+          ? Math.round((categoryTotal / incomeTransactions.reduce((sum, tx) => sum + (tx.amount || 0), 0)) * 100) 
+          : 0
       };
     });
-
+  
+    // Расходы по категориям
     const expensesByCategory = expenseCategories.map(category => {
       const categoryTotal = expenseTransactions
         .filter(tx => tx.categoryId === category.id)
-        .reduce((sum, tx) => sum + Math.abs(parseFloat(tx.amount) || 0), 0);
+        .reduce((sum, tx) => sum + Math.abs(tx.amount || 0), 0);
       
       return {
         ...category,
         total: categoryTotal,
-        percentage: totalExpense > 0 ? Math.round((categoryTotal / totalExpense) * 100) : 0
+        percentage: expenseTransactions.length > 0 
+          ? Math.round((categoryTotal / expenseTransactions.reduce((sum, tx) => sum + Math.abs(tx.amount || 0), 0)) * 100) 
+          : 0
       };
     });
-
-    return { totalIncome, totalExpense, incomesByCategory, expensesByCategory };
+  
+    return { 
+      totalIncome: incomeTransactions.reduce((sum, tx) => sum + (tx.amount || 0), 0),
+      totalExpense: expenseTransactions.reduce((sum, tx) => sum + Math.abs(tx.amount || 0), 0),
+      incomesByCategory, 
+      expensesByCategory 
+    };
   };
 
   const { totalIncome, totalExpense, incomesByCategory, expensesByCategory } = calculateTransactions();
@@ -145,7 +331,12 @@ export default function Dashboard() {
     return currencySymbols[currency] || currency;
   };
 
-  if (loading) return <div className="p-4">Загрузка...</div>;
+  if (loading) return (
+    <div className="flex justify-center items-center h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+  );
+  
   if (error) return <div className="p-4 text-red-500">Ошибка: {error}</div>;
   if (!user) return <div className="p-4">Пользователь не авторизован</div>;
 
@@ -154,101 +345,69 @@ export default function Dashboard() {
       <h1 className="text-2xl font-bold mb-6">
         Добро пожаловать, {user.name || user.email}!
       </h1>
+
+      <Link 
+        to="/stats" 
+         className="inline-block mb-6 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+        >
+         Перейти к статистике →
+      </Link>
       
       {/* Общий баланс */}
       <div className="mb-6 p-4 bg-white rounded-xl shadow-md">
         <div className="flex justify-between items-center">
           <h2 className="text-lg font-semibold">Общий баланс</h2>
           <div className={`text-2xl font-bold ${balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-            {balance.toFixed(2)} {getCurrencySymbol()}
+            {Money.format(balance)} {getCurrencySymbol()}
           </div>
         </div>
         <div className="flex justify-between mt-2">
           <div className="text-green-600">
-            Доходы: +{totalIncome.toFixed(2)} {getCurrencySymbol()}
+            Доходы: +{Money.format(totalIncome)} {getCurrencySymbol()}
           </div>
           <div className="text-red-600">
-            Расходы: -{totalExpense.toFixed(2)} {getCurrencySymbol()}
+            Расходы: -{Money.format(totalExpense)} {getCurrencySymbol()}
           </div>
         </div>
       </div>
       
-      {/* Блок доходов */}
-      <div className="mb-8 p-5 bg-white rounded-xl shadow-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Доходы</h2>
-          <span className="text-gray-500">
-            {new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}
-          </span>
+      {/* Фильтр по дате */}
+      <div className="mb-4 flex flex-wrap gap-4 items-center">
+        <div>
+          <label className="block mb-1 text-sm font-medium">С:</label>
+          <input
+            type="date"
+            value={dateRange.start}
+            onChange={(e) => setDateRange({...dateRange, start: e.target.value})}
+            className="p-2 border rounded"
+          />
         </div>
-        
-        {/* Доходы по категориям */}
-        <div className="space-y-3">
-          {incomesByCategory.map(category => (
-            <div key={category.id} className="p-3 bg-gray-50 rounded-lg">
-              <div className="flex justify-between items-center mb-1">
-                <div className="flex items-center">
-                  <span className="mr-2 text-lg">{category.icon}</span>
-                  <span>{category.name}</span>
-                </div>
-                <span className="font-medium text-green-600">
-                  +{category.total.toFixed(2)} {getCurrencySymbol()}
-                </span>
-              </div>
-              {category.total > 0 && (
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-green-500 h-2 rounded-full" 
-                    style={{ width: `${category.percentage}%` }}
-                  ></div>
-                </div>
-              )}
-            </div>
-          ))}
+        <div>
+          <label className="block mb-1 text-sm font-medium">По:</label>
+          <input
+            type="date"
+            value={dateRange.end}
+            onChange={(e) => setDateRange({...dateRange, end: e.target.value})}
+            className="p-2 border rounded"
+          />
         </div>
       </div>
-      
-      {/* Блок расходов */}
-      <div className="mb-8 p-5 bg-white rounded-xl shadow-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Расходы</h2>
-          <span className="text-gray-500">
-            {new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}
-          </span>
-        </div>
-        
-        {/* Расходы по категориям */}
-        <div className="space-y-3">
-          {expensesByCategory.map(category => (
-            <div key={category.id} className="p-3 bg-gray-50 rounded-lg">
-              <div className="flex justify-between items-center mb-1">
-                <div className="flex items-center">
-                  <span className="mr-2 text-lg">{category.icon}</span>
-                  <span>{category.name}</span>
-                </div>
-                <span className="font-medium text-red-600">
-                  -{category.total.toFixed(2)} {getCurrencySymbol()}
-                </span>
-              </div>
-              {category.total > 0 && (
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-red-500 h-2 rounded-full" 
-                    style={{ width: `${category.percentage}%` }}
-                  ></div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-      
+
+      {/* Статистика
+      <Statistics 
+        incomesByCategory={incomesByCategory} 
+        expensesByCategory={expensesByCategory}
+        currencySymbol={getCurrencySymbol()}
+      /> */}
+
       {/* Блок счетов */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Ваши счета</h2>
           <span className="text-gray-500">
-            Общий баланс: {accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0).toFixed(2)} {getCurrencySymbol()}
+            Общий баланс: {Money.format(
+              accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0)
+            )} {getCurrencySymbol()}
           </span>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -257,7 +416,7 @@ export default function Dashboard() {
               <div className="flex justify-between">
                 <span className="font-medium">{acc.name}</span>
                 <span className={acc.balance >= 0 ? 'text-green-600' : 'text-red-600'}>
-                  {acc.balance?.toFixed(2) || '0.00'} {getCurrencySymbol(acc.currency)}
+                  {Money.format(acc.balance)} {getCurrencySymbol(acc.currency)}
                 </span>
               </div>
             </div>
@@ -265,61 +424,112 @@ export default function Dashboard() {
         </div>
       </div>
 
-        <div className="mb-8 p-5 bg-white rounded-xl shadow-md">
-  <h2 className="text-xl font-semibold mb-4">История транзакций</h2>
-  <div className="space-y-3">
-    {transactions
-      .sort((a, b) => new Date(b.date) - new Date(a.date)) // Сортировка по дате
-      .map(tx => {
-        const category = [...incomeCategories, ...expenseCategories]
-          .find(cat => cat.id === tx.categoryId);
-        const account = accounts.find(acc => acc.id === tx.accountId);
-        
-        return (
-          <div 
-            key={tx.id} 
-            className="p-3 bg-gray-50 rounded-lg flex items-center justify-between"
-          >
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">{category?.icon || '💸'}</span>
-              <div>
-                <div className="font-medium">{category?.name || 'Неизвестно'}</div>
-                <div className="text-sm text-gray-500">
-                  {account?.name} • {new Date(tx.date).toLocaleDateString()}
-                </div>
-                {tx.comment && (
-                  <div className="text-sm text-gray-500 mt-1">"{tx.comment}"</div>
-                )}
-              </div>
-            </div>
-            <div className={`text-lg font-semibold ${
-              tx.type === 'income' ? 'text-green-600' : 'text-red-600'
-            }`}>
-              {tx.type === 'income' ? '+' : '-'}
-              {Math.abs(tx.amount).toFixed(2)} {getCurrencySymbol()}
-            </div>
+      {/* История транзакций */}
+      <div className="mb-8 p-5 bg-white rounded-xl shadow-md">
+        <h2 className="text-xl font-semibold mb-4">История транзакций</h2>
+        {filteredTransactions.length === 0 ? (
+          <p className="text-gray-500">Нет транзакций за выбранный период</p>
+        ) : (
+          <div className="space-y-3">
+            {filteredTransactions
+              .sort((a, b) => new Date(b.date) - new Date(a.date))
+              .map(tx => {
+                const category = [...incomeCategories, ...expenseCategories]
+                  .find(cat => cat.id === tx.categoryId);
+                const account = accounts.find(acc => acc.id === tx.accountId);
+                
+                return (
+                  <div 
+                    key={tx.id} 
+                    className="p-3 bg-gray-50 rounded-lg flex items-center justify-between group hover:bg-gray-100 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span 
+                        className="text-2xl"
+                        style={{ color: category?.color }}
+                      >
+                        {category?.icon || '💸'}
+                      </span>
+                      <div>
+                        <div className="font-medium">{category?.name || 'Неизвестно'}</div>
+                        <div className="text-sm text-gray-500">
+                          {account?.name} • {new Date(tx.date).toLocaleDateString()}
+                        </div>
+                        {tx.comment && (
+                          <div className="text-sm text-gray-500 mt-1">"{tx.comment}"</div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className={`text-lg font-semibold ${
+                        tx.type === 'income' ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {tx.type === 'income' ? '+' : '-'}
+                        {Money.format(Math.abs(tx.amount))} {getCurrencySymbol()}
+                      </div>
+                      <button 
+                        onClick={() => handleEditTransaction(tx)}
+                        className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-500 transition-opacity"
+                        title="Редактировать"
+                      >
+                        ✏️
+                      </button>
+                      <button 
+                         onClick={() => handleDeleteTransaction(tx.id)}
+                         className="text-red-500 hover:text-red-700 ml-2"
+                         title="Удалить транзакцию"
+                      >
+                         ×
+                     </button>
+                    </div>
+                  </div>
+                );
+              })}
           </div>
-        );
-      })}
-  </div>
-</div>
+        )}
+      </div>
 
       {/* Кнопка добавления транзакции */}
       <button 
         onClick={() => setShowModal(true)}
         className="fixed bottom-6 right-6 bg-blue-500 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl hover:bg-blue-600 transition-colors"
+        title="Добавить транзакцию"
       >
         +
       </button>
       
-      {/* Модальное окно для добавления транзакции */}
+      {/* Кнопка управления категориями */}
+      <button 
+        onClick={() => setShowCategoryModal(true)}
+        className="fixed bottom-24 right-6 bg-green-500 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl hover:bg-green-600 transition-colors"
+        title="Управление категориями"
+      >
+        🗂
+      </button>
+
+      {/* Кнопка добавления счета */}
+      <button 
+        onClick={() => setShowAccountModal(true)}
+        className="fixed bottom-36 right-6 bg-purple-500 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl hover:bg-purple-600 transition-colors"
+        title="Добавить счет"
+      >
+        💳
+      </button>
+      
+      {/* Модальное окно для добавления/редактирования транзакции */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white p-6 rounded-lg w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Добавить транзакцию</h2>
+              <h2 className="text-xl font-bold">
+                {editingTransaction ? 'Редактировать транзакцию' : 'Добавить транзакцию'}
+              </h2>
               <button 
-                onClick={() => setShowModal(false)}
+                onClick={() => {
+                  setShowModal(false);
+                  setEditingTransaction(null);
+                  resetForm();
+                }}
                 className="text-gray-500 hover:text-gray-700"
               >
                 ✕
@@ -346,7 +556,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={editingTransaction ? handleUpdateTransaction : handleSubmit}>
               <div className="mb-4">
                 <label className="block mb-2 font-medium">Счет:</label>
                 <select
@@ -375,11 +585,15 @@ export default function Dashboard() {
                   <option value="">Выберите категорию</option>
                   {transactionType === 'income' ? (
                     incomeCategories.map(cat => (
-                      <option key={cat.id} value={cat.id}>{cat.icon} {cat.name}</option>
+                      <option key={cat.id} value={cat.id}>
+                        {cat.icon} {cat.name}
+                      </option>
                     ))
                   ) : (
                     expenseCategories.map(cat => (
-                      <option key={cat.id} value={cat.id}>{cat.icon} {cat.name}</option>
+                      <option key={cat.id} value={cat.id}>
+                        {cat.icon} {cat.name}
+                      </option>
                     ))
                   )}
                 </select>
@@ -429,16 +643,177 @@ export default function Dashboard() {
                 />
               </div>
 
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  className="flex-1 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+                >
+                  {editingTransaction ? 'Обновить' : 'Добавить'}
+                </button>
+                {editingTransaction && (
+                  <button
+                    type="button"
+                    className="flex-1 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium"
+                    onClick={() => handleDeleteTransaction(editingTransaction.id)}
+                  >
+                    Удалить
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Модальное окно для добавления категории */}
+      {showCategoryModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Добавить категорию</h2>
+              <button 
+                onClick={() => setShowCategoryModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <form onSubmit={handleAddCategory}>
+              <div className="mb-4">
+                <label className="block mb-2 font-medium">Тип категории:</label>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    className={`flex-1 py-2 rounded-lg ${newCategory.type === 'income' ? 'bg-green-500 text-white' : 'bg-gray-100'}`}
+                    onClick={() => setNewCategory({...newCategory, type: 'income'})}
+                  >
+                    Доход
+                  </button>
+                  <button
+                    type="button"
+                    className={`flex-1 py-2 rounded-lg ${newCategory.type === 'expense' ? 'bg-red-500 text-white' : 'bg-gray-100'}`}
+                    onClick={() => setNewCategory({...newCategory, type: 'expense'})}
+                  >
+                    Расход
+                  </button>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block mb-2 font-medium">Название:</label>
+                <input
+                  type="text"
+                  value={newCategory.name}
+                  onChange={(e) => setNewCategory({...newCategory, name: e.target.value})}
+                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block mb-2 font-medium">Иконка:</label>
+                <input
+                  type="text"
+                  value={newCategory.icon}
+                  onChange={(e) => setNewCategory({...newCategory, icon: e.target.value})}
+                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                  maxLength="2"
+                />
+                <p className="text-sm text-gray-500 mt-1">Введите эмодзи (например: 🍎, 🚕, 💰)</p>
+              </div>
+
+              <div className="mb-4">
+                <label className="block mb-2 font-medium">Цвет:</label>
+                <div className="flex items-center gap-4">
+                  <input
+                    type="color"
+                    value={newCategory.color}
+                    onChange={(e) => setNewCategory({...newCategory, color: e.target.value})}
+                    className="w-16 h-12"
+                  />
+                  <span className="p-2 rounded" style={{ backgroundColor: newCategory.color }}>
+                    {newCategory.icon} Пример
+                  </span>
+                </div>
+              </div>
+
               <button
                 type="submit"
                 className="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
               >
-                Добавить транзакцию
+                Создать категорию
               </button>
             </form>
           </div>
         </div>
       )}
+
+      {/* Модальное окно для добавления счета */}
+        {showAccountModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white p-6 rounded-lg w-full max-w-md">
+              <div className="flex justify-between items-center mb-4">
+               <h2 className="text-xl font-bold">Добавить счет</h2>
+                <button 
+                 onClick={() => setShowAccountModal(false)}
+                 className="text-gray-500 hover:text-gray-700"
+                >
+                  ✕
+                </button>
+              </div>
+             <form onSubmit={handleAddAccount}>
+               <div className="mb-4">
+                 <label className="block mb-2 font-medium">Название счета:</label>
+                 <input
+                   type="text"
+                   value={newAccount.name}
+                   onChange={(e) => setNewAccount({...newAccount, name: e.target.value})}
+                   className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                   required
+                 />
+               </div>
+
+              <div className="mb-4">
+               <label className="block mb-2 font-medium">Валюта:</label>
+               <select
+                   value={newAccount.currency}
+                   onChange={(e) => setNewAccount({...newAccount, currency: e.target.value})}
+                   className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                   required
+                 >
+                  {Object.entries(currencySymbols).map(([code, symbol]) => (
+                    <option key={code} value={code}>{code} ({symbol})</option>
+                  ))}
+               </select>
+             </div>
+
+             <div className="mb-4">
+               <label className="block mb-2 font-medium">Начальный баланс:</label>
+               <input
+                  type="number"
+                  value={newAccount.balance}
+                  onChange={(e) => setNewAccount({
+                   ...newAccount, 
+                   balance: Math.max(0, parseFloat(e.target.value) || 0)
+                  })}
+                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  step="0.01"
+                  min="0"
+               />
+             </div>
+
+             <button
+               type="submit"
+               className="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+               >
+                Создать счет
+              </button>
+           </form>
+         </div>
+       </div>
+     )}       
     </div>
   );
 }

@@ -4,6 +4,7 @@ import {
   FETCH_ACCOUNTS_SUCCESS,
   FETCH_ACCOUNTS_FAILURE,
   UPDATE_ACCOUNT_SUCCESS,
+  ADD_ACCOUNT_SUCCESS,
 } from '../types';
 
 const initialState = {
@@ -20,6 +21,12 @@ export const accountReducer = (state = initialState, action) => {
       return { ...state, loading: false, data: action.payload };
     case FETCH_ACCOUNTS_FAILURE:
       return { ...state, loading: false, error: action.payload };
+    case ADD_ACCOUNT_SUCCESS:
+      return {
+          ...state,
+          data: [...state.data, action.payload],
+          loading: false
+      };
     case UPDATE_ACCOUNT_SUCCESS:
       return {
         ...state,
