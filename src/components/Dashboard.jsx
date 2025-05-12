@@ -320,7 +320,7 @@ const handleSubmit = async (e) => {
   return (
     <div className="p-4 max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">
-        Добро пожаловать, {user.name || user.email}!
+        Добро пожаловать в Finly, {user.name || user.email}!
       </h1>
 
       <Link 
@@ -375,13 +375,6 @@ const handleSubmit = async (e) => {
           />
         </div>
       </div>
-
-      {/* Статистика
-      <Statistics 
-        incomesByCategory={incomesByCategory} 
-        expensesByCategory={expensesByCategory}
-        currencySymbol={getCurrencySymbol()}
-      /> */}
 
       {/* Блок счетов */}
       <div className="mb-8">
