@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Statistics from './Stats';
 import { deleteCategory, fetchCategories } from '../redux/actions/categoryActions';
 import { fetchTransactions } from '../redux/actions/transactionActions';
+import styles from '../styles/StatsPage.module.css';
 
 const StatsPage = () => {
   const { user } = useSelector((state) => state.auth);
@@ -20,11 +21,10 @@ const StatsPage = () => {
   
   const dispatch = useDispatch();
 
-  // Загрузка данных при монтировании компонента
   useEffect(() => {
     if (user?.id) {
       dispatch(fetchTransactions(user.id));
-      dispatch(fetchCategories(user.id)); // Добавлена загрузка категорий
+      dispatch(fetchCategories(user.id));
     }
   }, [dispatch, user?.id]);
 
@@ -42,7 +42,6 @@ const StatsPage = () => {
   const handleDeleteCategory = async (categoryId) => {
     try {
       await dispatch(deleteCategory(categoryId));
-      // После удаления перезагружаем категории
       dispatch(fetchCategories(user.id));
     } catch (error) {
       console.error('Error deleting category:', error);
@@ -50,12 +49,12 @@ const StatsPage = () => {
   };
 
   if (transactionsLoading || categoriesLoading) {
-    return <div className="p-4">Загрузка данных...</div>;
+    return <div className={styles.loading}>Loading data...</div>;
   }
 
   if (transactionsError || categoriesError) {
-    return <div className="p-4 text-red-500">
-      Ошибка: {transactionsError || categoriesError}
+    return <div className={styles.error}>
+      Error: {transactionsError || categoriesError}
     </div>;
   }
 

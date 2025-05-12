@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUserThunk } from '../auth/authThunks';
 import { useNavigate } from 'react-router-dom';
+import styles from '../styles/Register.module.css';
+import { FaEnvelope, FaLock, FaUser, FaMoneyBillWave } from 'react-icons/fa';
 
 const currencies = [
-  { code: 'RUB', name: 'Рубли (₽)' },
-  { code: 'USD', name: 'Доллары ($)' },
-  { code: 'EUR', name: 'Евро (€)' },
-  { code: 'KZT', name: 'Тенге (₸)' },
+  { code: 'RUB', name: 'Rubles (₽)' },
+  { code: 'USD', name: 'US Dollars ($)' },
+  { code: 'EUR', name: 'Euros (€)' },
+  { code: 'KZT', name: 'Tenge (₸)' },
 ];
 
 export default function Register() {
@@ -30,50 +32,58 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <form onSubmit={handleSubmit} className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Регистрация</h2>
-        {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
+    <div className={styles.container}>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <h2 className={styles.title}>Sign Up</h2>
+        {error && <p className={styles.error}>{error}</p>}
         
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Email:</label>
+        <div className={styles.inputGroup}>
+          <span className={styles.inputIcon}>
+            <FaEnvelope />
+          </span>
           <input
             type="email"
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Ваш email"
+            className={styles.input}
+            placeholder="Enter email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
         
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Пароль:</label>
+        <div className={styles.inputGroup}>
+          <span className={styles.inputIcon}>
+            <FaLock />
+          </span>
           <input
             type="password"
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Придумайте пароль"
+            className={styles.input}
+            placeholder="Enter password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
         </div>
         
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Имя (необязательно):</label>
+        <div className={styles.inputGroup}>
+          <span className={styles.inputIcon}>
+            <FaUser />
+          </span>
           <input
             type="text"
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Ваше имя"
+            className={styles.input}
+            placeholder="Your name (optional)"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
         </div>
         
-        <div className="mb-6">
-          <label className="block text-gray-700 mb-2">Валюта по умолчанию:</label>
+        <div className={styles.inputGroup}>
+          <span className={styles.selectIcon}>
+            <FaMoneyBillWave />
+          </span>
           <select
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={styles.select}
             value={currency}
             onChange={(e) => setCurrency(e.target.value)}
           >
@@ -87,14 +97,14 @@ export default function Register() {
         
         <button 
           type="submit" 
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className={styles.button}
           disabled={loading}
         >
-          {loading ? 'Регистрация...' : 'Зарегистрироваться'}
+          {loading ? 'Регистрация...' : 'Sign up'}
         </button>
         
-        <div className="mt-4 text-center">
-          <p className="text-gray-600">Уже есть аккаунт? <a href="/login" className="text-blue-500 hover:underline">Войдите</a></p>
+        <div className={styles.linkContainer}>
+          <p className={styles.linkText}>Already have an account?? <a href="/login" className={styles.link}>Sign In</a></p>
         </div>
       </form>
     </div>

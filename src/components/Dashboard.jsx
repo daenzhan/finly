@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useParams,Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Money } from '../utils';
-import { fetchAccounts,addAccount } from '../redux/actions/accountActions';
+import { fetchAccounts, addAccount } from '../redux/actions/accountActions';
 import {
   fetchTransactions,
   addTransaction,
@@ -12,6 +12,7 @@ import {
 import { fetchCategories } from '../redux/actions/categoryActions';
 import { toast } from 'react-toastify';
 import LogoutButton from '../components/LogoutButton';
+import styles from '../styles/Dashboard.module.css';
 
 const currencySymbols = {
   RUB: '₽',
@@ -39,7 +40,6 @@ export default function Dashboard() {
   const { userId } = useParams();
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
-  const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [transactionType, setTransactionType] = useState('income');
   const [editingTransaction, setEditingTransaction] = useState(null);
@@ -47,9 +47,7 @@ export default function Dashboard() {
     start: new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0],
     end: new Date().toISOString().split('T')[0]
   });
-  
- 
-  
+
   const [newAccount, setNewAccount] = useState({
     name: '',
     icon: 'wallet',
@@ -94,14 +92,12 @@ export default function Dashboard() {
     }
   }, [dispatch, user?.id]);
 
-  // Объединяем стандартные и пользовательские категории
   const userIncomeCategories = categories?.filter(cat => cat.type === 'income') || [];
   const userExpenseCategories = categories?.filter(cat => cat.type === 'expense') || [];
 
   const incomeCategories = [...defaultIncomeCategories, ...userIncomeCategories];
   const expenseCategories = [...defaultExpenseCategories, ...userExpenseCategories];
 
-  // Фильтрация транзакций по дате
   const filteredTransactions = transactions?.filter(tx => {
     const txDate = new Date(tx.date);
     return txDate >= new Date(dateRange.start) && txDate <= new Date(dateRange.end);
@@ -123,51 +119,48 @@ export default function Dashboard() {
     setTransactionType('income');
   };
 
-  // В функции handleSubmit обновите создание транзакции:
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  
-  const amount = parseFloat(formData.amount);
-  if (isNaN(amount) || amount <= 0) {
-    toast.error('Введите корректную сумму');
-    return;
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    const amount = parseFloat(formData.amount);
+    if (isNaN(amount) || amount <= 0) {
+      toast.error('Введите корректную сумму');
+      return;
+    }
 
-  // Находим выбранную категорию
-  const selectedCategory = [
-    ...defaultIncomeCategories,
-    ...defaultExpenseCategories,
-    ...userIncomeCategories,
-    ...userExpenseCategories
-  ].find(c => c.id === formData.categoryId);
+    const selectedCategory = [
+      ...defaultIncomeCategories,
+      ...defaultExpenseCategories,
+      ...userIncomeCategories,
+      ...userExpenseCategories
+    ].find(c => c.id === formData.categoryId);
 
-  if (!selectedCategory) {
-    toast.error('Выберите категорию');
-    return;
-  }
+    if (!selectedCategory) {
+      toast.error('Выберите категорию');
+      return;
+    }
 
-  const newTransaction = {
-    userId: user.id,
-    accountId: formData.accountId,
-    amount: transactionType === 'income' ? amount : -amount,
-    date: formData.date,
-    comment: formData.comment,
-    type: transactionType,
-    createdAt: new Date().toISOString(),
-    // Важно сохранять оба поля!
-    category: selectedCategory.name,
-    categoryId: selectedCategory.id
+    const newTransaction = {
+      userId: user.id,
+      accountId: formData.accountId,
+      amount: transactionType === 'income' ? amount : -amount,
+      date: formData.date,
+      comment: formData.comment,
+      type: transactionType,
+      createdAt: new Date().toISOString(),
+      category: selectedCategory.name,
+      categoryId: selectedCategory.id
+    };
+
+    try {
+      await dispatch(addTransaction(newTransaction));
+      setShowModal(false);
+      resetForm();
+      toast.success('Транзакция успешно добавлена');
+    } catch (error) {
+      toast.error('Не удалось добавить транзакцию');
+    }
   };
-
-  try {
-    await dispatch(addTransaction(newTransaction));
-    setShowModal(false);
-    resetForm();
-    toast.success('Транзакция успешно добавлена');
-  } catch (error) {
-    toast.error('Не удалось добавить транзакцию');
-  }
-};
 
   const handleEditTransaction = (tx) => {
     setEditingTransaction(tx);
@@ -257,7 +250,6 @@ const handleSubmit = async (e) => {
       };
     }
   
-    // Создаем полный список всех категорий
     const allCategories = [
       ...defaultIncomeCategories,
       ...defaultExpenseCategories,
@@ -265,11 +257,9 @@ const handleSubmit = async (e) => {
       ...userExpenseCategories
     ];
   
-    // Функция для группировки транзакций по категориям
     const groupByCategory = (transactions, type) => {
       const result = {};
       
-      // Инициализируем все категории
       allCategories
         .filter(c => c.type === type)
         .forEach(cat => {
@@ -279,7 +269,6 @@ const handleSubmit = async (e) => {
           };
         });
   
-      // Считаем суммы
       transactions.forEach(tx => {
         const categoryId = tx.categoryId;
         if (result[categoryId]) {
@@ -301,7 +290,7 @@ const handleSubmit = async (e) => {
     };
   };
 
-  const { totalIncome, totalExpense, incomesByCategory, expensesByCategory } = calculateTransactions();
+  const { totalIncome, totalExpense } = calculateTransactions();
   const balance = totalIncome - totalExpense;
 
   const getCurrencySymbol = (currency = user?.currency) => {
@@ -309,89 +298,91 @@ const handleSubmit = async (e) => {
   };
 
   if (loading) return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+    <div className={styles.loadingContainer}>
+      <div className={styles.spinner}></div>
     </div>
   );
   
-  if (error) return <div className="p-4 text-red-500">Ошибка: {error}</div>;
-  if (!user) return <div className="p-4">Пользователь не авторизован</div>;
+  if (error) return <div className={styles.error}>Ошибка: {error}</div>;
+  if (!user) return <div className={styles.error}>Пользователь не авторизован</div>;
 
   return (
-    <div className="p-4 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">
+    <div className={styles.container}>
+      <h1 className={styles.welcomeTitle}>
         Добро пожаловать в Finly, {user.name || user.email}!
       </h1>
 
-      <Link 
-        to="/stats" 
-         className="inline-block mb-6 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+      <div className={styles.linksContainer}>
+        <Link 
+          to="/stats" 
+          className={`${styles.link} ${styles.linkPrimary}`}
         >
-         Перейти к статистике →
-      </Link>
-      <Link 
-        to="/categories" 
-        className="inline-block mb-6 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-         >
-            Управление категориями →
-      </Link>
+          <i className="fas fa-chart-bar"></i> Перейти к статистике
+        </Link>
+        <Link 
+          to="/categories" 
+          className={`${styles.link} ${styles.linkSecondary}`}
+        >
+          <i className="fas fa-tags"></i> Управление категориями
+        </Link>
+      </div>
       
       {/* Общий баланс */}
-      <div className="mb-6 p-4 bg-white rounded-xl shadow-md">
-        <div className="flex justify-between items-center">
-          <h2 className="text-lg font-semibold">Общий баланс</h2>
-          <div className={`text-2xl font-bold ${balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+      <div className={styles.balanceCard}>
+        <div className={styles.balanceHeader}>
+          <h2 className={styles.balanceTitle}>Общий баланс</h2>
+          <div className={`${styles.balanceAmount} ${balance >= 0 ? styles.positive : styles.negative}`}>
             {Money.format(balance)} {getCurrencySymbol()}
           </div>
         </div>
-        <div className="flex justify-between mt-2">
-          <div className="text-green-600">
+        <div className={styles.balanceSummary}>
+          <div className={styles.income}>
             Доходы: +{Money.format(totalIncome)} {getCurrencySymbol()}
           </div>
-          <div className="text-red-600">
+          <div className={styles.expense}>
             Расходы: -{Money.format(totalExpense)} {getCurrencySymbol()}
           </div>
         </div>
       </div>
       
       {/* Фильтр по дате */}
-      <div className="mb-4 flex flex-wrap gap-4 items-center">
-        <div>
-          <label className="block mb-1 text-sm font-medium">С:</label>
+      <div className={styles.dateFilter}>
+        <div className={styles.dateGroup}>
+          <label className={styles.dateLabel}>С:</label>
           <input
             type="date"
             value={dateRange.start}
             onChange={(e) => setDateRange({...dateRange, start: e.target.value})}
-            className="p-2 border rounded"
+            className={styles.dateInput}
           />
         </div>
-        <div>
-          <label className="block mb-1 text-sm font-medium">По:</label>
+        <div className={styles.dateGroup}>
+          <label className={styles.dateLabel}>По:</label>
           <input
             type="date"
             value={dateRange.end}
             onChange={(e) => setDateRange({...dateRange, end: e.target.value})}
-            className="p-2 border rounded"
+            className={styles.dateInput}
           />
         </div>
       </div>
 
       {/* Блок счетов */}
-      <div className="mb-8">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Ваши счета</h2>
-          <span className="text-gray-500">
+      <div className={styles.accountsSection}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Ваши счета</h2>
+          <span className={styles.sectionSubtitle}>
             Общий баланс: {Money.format(
               accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0)
             )} {getCurrencySymbol()}
           </span>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className={styles.accountsGrid}>
           {accounts.map((acc) => (
-            <div key={acc.id} className="p-4 bg-white rounded-lg shadow-sm border">
-              <div className="flex justify-between">
-                <span className="font-medium">{acc.name}</span>
-                <span className={acc.balance >= 0 ? 'text-green-600' : 'text-red-600'}>
+            <div key={acc.id} className={styles.accountCard}>
+              <div className={styles.accountContent}>
+                <span className={styles.accountName}>{acc.name}</span>
+                <span className={acc.balance >= 0 ? styles.positive : styles.negative}>
                   {Money.format(acc.balance)} {getCurrencySymbol(acc.currency)}
                 </span>
               </div>
@@ -401,12 +392,12 @@ const handleSubmit = async (e) => {
       </div>
 
       {/* История транзакций */}
-      <div className="mb-8 p-5 bg-white rounded-xl shadow-md">
-        <h2 className="text-xl font-semibold mb-4">История транзакций</h2>
+      <div className={styles.transactionsSection}>
+        <h2 className={styles.sectionTitle}>История транзакций</h2>
         {filteredTransactions.length === 0 ? (
-          <p className="text-gray-500">Нет транзакций за выбранный период</p>
+          <p className={styles.emptyState}>Нет транзакций за выбранный период</p>
         ) : (
-          <div className="space-y-3">
+          <div className={styles.transactionsList}>
             {filteredTransactions
               .sort((a, b) => new Date(b.date) - new Date(a.date))
               .map(tx => {
@@ -417,46 +408,46 @@ const handleSubmit = async (e) => {
                 return (
                   <div 
                     key={tx.id} 
-                    className="p-3 bg-gray-50 rounded-lg flex items-center justify-between group hover:bg-gray-100 transition-colors"
+                    className={styles.transactionCard}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className={styles.transactionInfo}>
                       <span 
-                        className="text-2xl"
+                        className={styles.transactionIcon}
                         style={{ color: category?.color }}
                       >
                         {category?.icon || '💸'}
                       </span>
-                      <div>
-                        <div className="font-medium">{category?.name || 'Неизвестно'}</div>
-                        <div className="text-sm text-gray-500">
+                      <div className={styles.transactionDetails}>
+                        <div className={styles.transactionCategory}>{category?.name || 'Неизвестно'}</div>
+                        <div className={styles.transactionMeta}>
                           {account?.name} • {new Date(tx.date).toLocaleDateString()}
+                          {tx.comment && ` • "${tx.comment}"`}
                         </div>
-                        {tx.comment && (
-                          <div className="text-sm text-gray-500 mt-1">"{tx.comment}"</div>
-                        )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <div className={`text-lg font-semibold ${
-                        tx.type === 'income' ? 'text-green-600' : 'text-red-600'
+                    <div className={styles.transactionAmountWrapper}>
+                      <div className={`${styles.transactionAmount} ${
+                        tx.type === 'income' ? styles.positive : styles.negative
                       }`}>
                         {tx.type === 'income' ? '+' : '-'}
                         {Money.format(Math.abs(tx.amount))} {getCurrencySymbol()}
                       </div>
-                      <button 
-                        onClick={() => handleEditTransaction(tx)}
-                        className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-500 transition-opacity"
-                        title="Редактировать"
-                      >
-                        ✏️
-                      </button>
-                      <button 
-                         onClick={() => handleDeleteTransaction(tx.id)}
-                         className="text-red-500 hover:text-red-700 ml-2"
-                         title="Удалить транзакцию"
-                      >
-                         ×
-                     </button>
+                      <div className={styles.transactionActions}>
+                        <button 
+                          onClick={() => handleEditTransaction(tx)}
+                          className={styles.actionButton}
+                          title="Редактировать"
+                        >
+                          <i className="fas fa-edit"></i>
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteTransaction(tx.id)}
+                          className={`${styles.actionButton} ${styles.deleteButton}`}
+                          title="Удалить транзакцию"
+                        >
+                          <i className="fas fa-trash-alt"></i>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );
@@ -468,27 +459,27 @@ const handleSubmit = async (e) => {
       {/* Кнопка добавления транзакции */}
       <button 
         onClick={() => setShowModal(true)}
-        className="fixed bottom-6 right-6 bg-blue-500 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl hover:bg-blue-600 transition-colors"
+        className={styles.addButton}
         title="Добавить транзакцию"
       >
-        +
+        <i className="fas fa-plus"></i>
       </button>
 
       {/* Кнопка добавления счета */}
       <button 
         onClick={() => setShowAccountModal(true)}
-        className="fixed bottom-36 right-6 bg-purple-500 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl hover:bg-purple-600 transition-colors"
+        className={`${styles.addButton} ${styles.addAccountButton}`}
         title="Добавить счет"
       >
-        💳
+        <i className="fas fa-wallet"></i>
       </button>
       
       {/* Модальное окно для добавления/редактирования транзакции */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h2 className={styles.modalTitle}>
                 {editingTransaction ? 'Редактировать транзакцию' : 'Добавить транзакцию'}
               </h2>
               <button 
@@ -497,40 +488,44 @@ const handleSubmit = async (e) => {
                   setEditingTransaction(null);
                   resetForm();
                 }}
-                className="text-gray-500 hover:text-gray-700"
+                className={styles.closeButton}
               >
-                ✕
+                <i className="fas fa-times"></i>
               </button>
             </div>
             
-            <div className="mb-4">
-              <label className="block mb-2 font-medium">Тип транзакции:</label>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  className={`flex-1 py-2 rounded-lg ${transactionType === 'income' ? 'bg-green-500 text-white' : 'bg-gray-100'}`}
-                  onClick={() => setTransactionType('income')}
-                >
-                  Доход
-                </button>
-                <button
-                  type="button"
-                  className={`flex-1 py-2 rounded-lg ${transactionType === 'expense' ? 'bg-red-500 text-white' : 'bg-gray-100'}`}
-                  onClick={() => setTransactionType('expense')}
-                >
-                  Расход
-                </button>
+            <form onSubmit={editingTransaction ? handleUpdateTransaction : handleSubmit} className={styles.modalBody}>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Тип транзакции:</label>
+                <div className={styles.toggleGroup}>
+                  <button
+                    type="button"
+                    className={`${styles.toggleButton} ${
+                      transactionType === 'income' ? styles.toggleButtonActive : ''
+                    }`}
+                    onClick={() => setTransactionType('income')}
+                  >
+                    <i className="fas fa-arrow-down"></i> Доход
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.toggleButton} ${
+                      transactionType === 'expense' ? styles.toggleButtonActive : ''
+                    }`}
+                    onClick={() => setTransactionType('expense')}
+                  >
+                    <i className="fas fa-arrow-up"></i> Расход
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <form onSubmit={editingTransaction ? handleUpdateTransaction : handleSubmit}>
-              <div className="mb-4">
-                <label className="block mb-2 font-medium">Счет:</label>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Счет:</label>
                 <select
                   name="accountId"
                   value={formData.accountId}
                   onChange={handleInputChange}
-                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className={`${styles.formControl} ${styles.selectControl}`}
                   required
                 >
                   <option value="">Выберите счет</option>
@@ -540,13 +535,13 @@ const handleSubmit = async (e) => {
                 </select>
               </div>
 
-              <div className="mb-4">
-                <label className="block mb-2 font-medium">Категория:</label>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Категория:</label>
                 <select
                   name="categoryId"
                   value={formData.categoryId}
                   onChange={handleInputChange}
-                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className={`${styles.formControl} ${styles.selectControl}`}
                   required
                 >
                   <option value="">Выберите категорию</option>
@@ -566,18 +561,16 @@ const handleSubmit = async (e) => {
                 </select>
               </div>
 
-              <div className="mb-4">
-                <label className="block mb-2 font-medium">Сумма:</label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                    {getCurrencySymbol()}
-                  </span>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Сумма:     <i className={`${styles.inputIcon} fas fa-${getCurrencySymbol().replace('₽', 'ruble-sign').replace('$', 'dollar-sign').replace('€', 'euro-sign').replace('₸', 'tenge')}`}></i></label>
+                <div className={styles.inputWithIcon}>
+              
                   <input
                     type="number"
                     name="amount"
                     value={formData.amount}
                     onChange={handleInputChange}
-                    className="w-full p-3 pl-10 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className={styles.formControl}
                     placeholder="0.00"
                     min="0"
                     step="0.01"
@@ -586,44 +579,44 @@ const handleSubmit = async (e) => {
                 </div>
               </div>
 
-              <div className="mb-4">
-                <label className="block mb-2 font-medium">Дата:</label>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Дата:</label>
                 <input
                   type="date"
                   name="date"
                   value={formData.date}
                   onChange={handleInputChange}
-                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className={styles.formControl}
                   required
                 />
               </div>
 
-              <div className="mb-6">
-                <label className="block mb-2 font-medium">Комментарий:</label>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Комментарий:</label>
                 <input
                   type="text"
                   name="comment"
                   value={formData.comment}
                   onChange={handleInputChange}
-                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className={styles.formControl}
                   placeholder="Необязательно"
                 />
               </div>
 
-              <div className="flex gap-2">
+              <div className={styles.buttonsGroup}>
                 <button
                   type="submit"
-                  className="flex-1 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+                  className={styles.submitButton}
                 >
-                  {editingTransaction ? 'Обновить' : 'Добавить'}
+                  <i className="fas fa-check"></i> {editingTransaction ? 'Обновить' : 'Добавить'}
                 </button>
                 {editingTransaction && (
                   <button
                     type="button"
-                    className="flex-1 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium"
+                    className={`${styles.submitButton} ${styles.dangerButton}`}
                     onClick={() => handleDeleteTransaction(editingTransaction.id)}
                   >
-                    Удалить
+                    <i className="fas fa-trash-alt"></i> Удалить
                   </button>
                 )}
               </div>
@@ -632,74 +625,73 @@ const handleSubmit = async (e) => {
         </div>
       )}
 
-      
-
       {/* Модальное окно для добавления счета */}
-        {showAccountModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white p-6 rounded-lg w-full max-w-md">
-              <div className="flex justify-between items-center mb-4">
-               <h2 className="text-xl font-bold">Добавить счет</h2>
-                <button 
-                 onClick={() => setShowAccountModal(false)}
-                 className="text-gray-500 hover:text-gray-700"
-                >
-                  ✕
-                </button>
+      {showAccountModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h2 className={styles.modalTitle}>Добавить счет</h2>
+              <button 
+                onClick={() => setShowAccountModal(false)}
+                className={styles.closeButton}
+              >
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
+            
+            <form onSubmit={handleAddAccount} className={styles.modalBody}>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Название счета:</label>
+                <input
+                  type="text"
+                  value={newAccount.name}
+                  onChange={(e) => setNewAccount({...newAccount, name: e.target.value})}
+                  className={styles.formControl}
+                  required
+                />
               </div>
-             <form onSubmit={handleAddAccount}>
-               <div className="mb-4">
-                 <label className="block mb-2 font-medium">Название счета:</label>
-                 <input
-                   type="text"
-                   value={newAccount.name}
-                   onChange={(e) => setNewAccount({...newAccount, name: e.target.value})}
-                   className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                   required
-                 />
-               </div>
 
-              <div className="mb-4">
-               <label className="block mb-2 font-medium">Валюта:</label>
-               <select
-                   value={newAccount.currency}
-                   onChange={(e) => setNewAccount({...newAccount, currency: e.target.value})}
-                   className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                   required
-                 >
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Валюта:</label>
+                <select
+                  value={newAccount.currency}
+                  onChange={(e) => setNewAccount({...newAccount, currency: e.target.value})}
+                  className={`${styles.formControl} ${styles.selectControl}`}
+                  required
+                >
                   {Object.entries(currencySymbols).map(([code, symbol]) => (
                     <option key={code} value={code}>{code} ({symbol})</option>
                   ))}
-               </select>
-             </div>
+                </select>
+              </div>
 
-             <div className="mb-4">
-               <label className="block mb-2 font-medium">Начальный баланс:</label>
-               <input
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Начальный баланс:</label>
+                <input
                   type="number"
                   value={newAccount.balance}
                   onChange={(e) => setNewAccount({
-                   ...newAccount, 
-                   balance: Math.max(0, parseFloat(e.target.value) || 0)
+                    ...newAccount, 
+                    balance: Math.max(0, parseFloat(e.target.value) || 0)
                   })}
-                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className={styles.formControl}
                   step="0.01"
                   min="0"
-               />
-             </div>
+                />
+              </div>
 
-             <button
-               type="submit"
-               className="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
-               >
-                Создать счет
+              <button
+                type="submit"
+                className={styles.submitButton}
+              >
+                <i className="fas fa-check"></i> Создать счет
               </button>
-           </form>
-         </div>
-       </div>
-     )}   
+            </form>
+          </div>
+        </div>
+      )}
 
-     <LogoutButton />    
+      <LogoutButton />
     </div>
   );
 }

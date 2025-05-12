@@ -3,9 +3,9 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 
 const DEFAULT_ACCOUNTS = [
-  { name: "Кошелек", icon: "money-bill-wave", balance: 0 },
-  { name: "Банковская карта", icon: "credit-card", balance: 0 },
-  { name: "Инвестиции", icon: "chart-line", balance: 0 }
+  { name: "Кошелек: ", icon: "money-bill-wave", balance: 0 },
+  { name: "Банковская карта: ", icon: "credit-card", balance: 0 },
+  { name: "Инвестиции: ", icon: "chart-line", balance: 0 }
 ];
 
 const handleApiError = (error, defaultMessage) => {

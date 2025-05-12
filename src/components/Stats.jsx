@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Pie, Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title } from 'chart.js';
 import { defaultIncomeCategories, defaultExpenseCategories } from './categories';
+import styles from '../styles/StatsPage.module.css';
+import { Link } from 'react-router-dom';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title);
 
@@ -31,7 +33,6 @@ const Statistics = ({
   const calculateCategoryTotals = (type) => {
     const result = {};
 
-    // Инициализируем все категории данного типа
     const defaultCategories = type === 'income' 
       ? [...defaultIncomeCategories, ...incomesByCategory]
       : [...defaultExpenseCategories, ...expensesByCategory];
@@ -43,15 +44,13 @@ const Statistics = ({
       };
     });
 
-    // Добавляем "Неизвестную категорию"
     result['unknown'] = {
       id: 'unknown',
-      name: 'Неизвестная категория',
+      name: 'Unknown category"',
       color: '#CCCCCC',
       total: 0
     };
 
-    // Агрегируем суммы
     filteredTransactions
       .filter(tx => tx.type === type)
       .forEach(tx => {
@@ -73,7 +72,6 @@ const Statistics = ({
   const incomeData = calculateCategoryTotals('income');
   const expenseData = calculateCategoryTotals('expense');
 
-  // Подготовка данных для PieChart
   const preparePieData = (categories) => ({
     labels: categories.map(c => c.name),
     datasets: [{
@@ -83,7 +81,6 @@ const Statistics = ({
     }]
   });
 
-  // Подготовка данных для BarChart (по месяцам)
   const prepareBarData = () => {
     const monthsInRange = [];
     const startDate = new Date(dateRange.start);
@@ -118,19 +115,16 @@ const Statistics = ({
     });
   };
 
-  // Остальной код рендеринга остается без изменений
-  // ...
-
   const barChartData = {
     labels: prepareBarData().map(m => m.month),
     datasets: [
       {
-        label: 'Доходы',
+        label: 'Income',
         data: prepareBarData().map(m => m.income),
         backgroundColor: '#4CAF50',
       },
       {
-        label: 'Расходы',
+        label: 'Expense',
         data: prepareBarData().map(m => m.expense),
         backgroundColor: '#F44336',
       },
@@ -165,7 +159,6 @@ const Statistics = ({
   };
 
   const getCategoryById = (categoryId) => {
-    // Объединяем все возможные категории
     const allCategories = [
       ...defaultIncomeCategories,
       ...defaultExpenseCategories,
@@ -182,33 +175,39 @@ const Statistics = ({
     };
   };
   
-
-  
   return (
-    <div className="p-4 max-w-6xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Статистика</h1>
+    <div className={styles.container}>
+      <h1 className={styles.title}>
+        <i className={`${styles.icon} fas fa-chart-pie`} />
+        Statistics
+      </h1>
+      <Link to="/dashboard" className={styles.backLink}>
+              <i className="fas fa-arrow-left"></i> Back
+            </Link>
       
-      {/* Фильтр по дате */}
-      <div className="mb-6 p-4 bg-white rounded-xl shadow-md">
-        <h3 className="text-lg font-semibold mb-4">Фильтр по дате</h3>
-        <div className="flex flex-wrap gap-4 items-center">
-          <div className="flex-1 min-w-[200px]">
-            <label className="block mb-2 text-sm font-medium">Начальная дата:</label>
+      <div className={styles.filterSection}>
+        <h3 className={styles.filterTitle}>
+          <i className={`${styles.filterIcon} fas fa-filter`} />
+          Date filter
+        </h3>
+        <div className={styles.dateInputs}>
+          <div className={styles.dateInputGroup}>
+            <label className={styles.dateLabel}>Start date:</label>
             <input
               type="date"
               value={dateRange.start}
               onChange={(e) => setDateRange({...dateRange, start: e.target.value})}
-              className="w-full p-2 border rounded"
+              className={styles.dateInput}
               max={dateRange.end}
             />
           </div>
-          <div className="flex-1 min-w-[200px]">
-            <label className="block mb-2 text-sm font-medium">Конечная дата:</label>
+          <div className={styles.dateInputGroup}>
+            <label className={styles.dateLabel}>End date:</label>
             <input
               type="date"
               value={dateRange.end}
               onChange={(e) => setDateRange({...dateRange, end: e.target.value})}
-              className="w-full p-2 border rounded"
+              className={styles.dateInput}
               min={dateRange.start}
               max={new Date().toISOString().split('T')[0]}
             />
@@ -216,26 +215,28 @@ const Statistics = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        {/* Доходы */}
-        <div className="p-4 bg-white rounded-xl shadow-md">
-          <h3 className="text-lg font-semibold mb-4">Доходы по категориям</h3>
+      <div className={styles.chartsGrid}>
+        <div className={styles.chartContainer}>
+          <h3 className={styles.chartTitle}>
+            <i className={`${styles.chartIcon} fas fa-money-bill-wave`} />
+            Income by categories
+          </h3>
           {incomeData.length > 0 ? (
             <>
-              <div className="h-64">
+              <div className={styles.chartWrapper}>
                 <Pie data={preparePieData(incomeData)} options={chartOptions} />
               </div>
-              <div className="mt-4">
+              <div className={styles.categoryList}>
                 {incomeData.map(category => (
-                  <div key={category.id} className="flex justify-between items-center mb-1">
-                    <span className="flex items-center">
+                  <div key={category.id} className={styles.categoryItem}>
+                    <span className={styles.categoryInfo}>
                       <span 
-                        className="w-3 h-3 rounded-full mr-2" 
+                        className={styles.categoryColor} 
                         style={{ backgroundColor: category.color }}
                       />
-                      {category.name}
+                      <span className={styles.categoryName}>{category.name}</span>
                     </span>
-                    <span>
+                    <span className={styles.categoryAmount}>
                       {category.total.toFixed(2)} {currencySymbol}
                     </span>
                   </div>
@@ -243,29 +244,31 @@ const Statistics = ({
               </div>
             </>
           ) : (
-            <p className="text-gray-500">Нет данных о доходах за выбранный период</p>
+            <p className={styles.noData}>There is no income data for the selected period</p>
           )}
         </div>
         
-        {/* Расходы */}
-        <div className="p-4 bg-white rounded-xl shadow-md">
-          <h3 className="text-lg font-semibold mb-4">Расходы по категориям</h3>
+        <div className={styles.chartContainer}>
+          <h3 className={styles.chartTitle}>
+            <i className={`${styles.chartIcon} fas fa-shopping-cart`} />
+            Expenses by categories
+          </h3>
           {expenseData.length > 0 ? (
             <>
-              <div className="h-64">
+              <div className={styles.chartWrapper}>
                 <Pie data={preparePieData(expenseData)} options={chartOptions} />
               </div>
-              <div className="mt-4">
+              <div className={styles.categoryList}>
                 {expenseData.map(category => (
-                  <div key={category.id} className="flex justify-between items-center mb-1">
-                    <span className="flex items-center">
+                  <div key={category.id} className={styles.categoryItem}>
+                    <span className={styles.categoryInfo}>
                       <span 
-                        className="w-3 h-3 rounded-full mr-2" 
+                        className={styles.categoryColor} 
                         style={{ backgroundColor: category.color }}
                       />
-                      {category.name}
+                      <span className={styles.categoryName}>{category.name}</span>
                     </span>
-                    <span>
+                    <span className={styles.categoryAmount}>
                       {category.total.toFixed(2)} {currencySymbol}
                     </span>
                   </div>
@@ -273,20 +276,22 @@ const Statistics = ({
               </div>
             </>
           ) : (
-            <p className="text-gray-500">Нет данных о расходах за выбранный период</p>
+            <p className={styles.noData}>There is no expense data for the selected period</p>
           )}
         </div>
       </div>
 
-      {/* График динамики */}
-      <div className="p-4 bg-white rounded-xl shadow-md mb-8">
-        <h3 className="text-lg font-semibold mb-4">Динамика доходов и расходов</h3>
-        <div className="h-96">
+      <div className={styles.dynamicChartContainer}>
+        <h3 className={styles.chartTitle}>
+          <i className={`${styles.chartIcon} fas fa-chart-line`} />
+          Income and expense dynamics
+        </h3>
+        <div className={styles.dynamicChartWrapper}>
           {prepareBarData().length > 0 ? (
             <Bar data={barChartData} options={chartOptions} />
           ) : (
-            <p className="text-gray-500 text-center py-20">
-              Нет данных для отображения за выбранный период
+            <p className={styles.noData}>
+              There is no data to display for the selected period
             </p>
           )}
         </div>

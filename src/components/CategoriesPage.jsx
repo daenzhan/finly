@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { fetchCategories, addCategory, deleteCategory } from '../redux/actions/categoryActions';
 import { toast } from 'react-toastify';
+import styles from '../styles/CategoriesPage.module.css'
 
 const defaultIncomeCategories = [
   { id: 'default_salary', name: 'Зарплата', icon: '💼', color: '#4CAF50', type: 'income' },
@@ -21,16 +22,17 @@ const defaultExpenseCategories = [
 ];
 
 const EMOJI_GROUPS = {
-  'Еда': ['🍎', '🍔', '🍕', '🍟', '🌮', '🍣', '🍜', '🍦', '☕', '🍺'],
-  'Транспорт': ['🚗', '🚕', '🚲', '✈️', '🚆', '🚢', '🛵', '🚀'],
-  'Финансы': ['💰', '💵', '💳', '🏦', '📈', '💲'],
-  'Развлечения': ['🎬', '🎮', '🎧', '🎤', '🎭', '🎲'],
-  'Покупки': ['🛍️', '👕', '👠', '🛒', '🎁'],
-  'Здоровье': ['💊', '🏥', '🚑', '🩺', '💉'],
-  'Образование': ['📚', '🎓', '✏️', '📝', '🏫'],
-  'Дом': ['🏠', '🛋️', '🛏️', '🚿', '🍳'],
-  'Другое': ['❤️', '⭐', '🎯', '🔑', '⏰']
+  'Food': ['🍎', '🍔', '🍕', '🍟', '🌮', '🍣', '🍜', '🍦', '☕', '🍺'],
+  'Transport': ['🚗', '🚕', '🚲', '✈️', '🚆', '🚢', '🛵', '🚀'],
+  'Finance': ['💰', '💵', '💳', '🏦', '📈', '💲'],
+  'Entertainment': ['🎬', '🎮', '🎧', '🎤', '🎭', '🎲'],
+  'Shopping': ['🛍️', '👕', '👠', '🛒', '🎁'],
+  'Health': ['💊', '🏥', '🚑', '🩺', '💉'],
+  'Education': ['📚', '🎓', '✏️', '📝', '🏫'],
+  'Home': ['🏠', '🛋️', '🛏️', '🚿', '🍳'],
+  'Other': ['❤️', '⭐', '🎯', '🔑', '⏰']
 };
+
 
 export default function CategoriesPage() {
   const dispatch = useDispatch();
@@ -118,28 +120,35 @@ export default function CategoriesPage() {
   if (!user) return <div className="p-4">Пользователь не авторизован</div>;
 
   return (
-    <div className="p-4 max-w-3xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Управление категориями</h1>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>
+          <i className={`${styles.icon} fas fa-tags`}></i>
+          Categories settings
+        </h1>
         <button 
           onClick={() => setShowModal(true)}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+          className={styles.addButton}
         >
-          Добавить категорию
+          <i className="fas fa-plus"></i> New category
         </button>
       </div>
 
-      <Link 
-        to="/dashboard" 
-        className="inline-block mb-6 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
-      >
-        ← Назад в Dashboard
+      <Link to="/dashboard" className={styles.backLink}>
+        <i className="fas fa-arrow-left"></i> Back
       </Link>
 
-      {/* Стандартные категории доходов */}
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4"> Категории доходов</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+      {/*доход*/}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>
+          <i className={`${styles.sectionIcon} fas fa-money-bill-wave`}></i>
+          Incomes
+          <span className={styles.countBadge}>
+            {defaultIncomeCategories.length + userIncomeCategories.length}
+          </span>
+        </h2>
+        
+        <div className={styles.categoriesGrid}>
           {defaultIncomeCategories.map(category => (
             <CategoryCard 
               key={category.id} 
@@ -148,30 +157,28 @@ export default function CategoriesPage() {
               onDelete={handleDeleteCategory}
             />
           ))}
+          {userIncomeCategories.map(category => (
+            <CategoryCard 
+              key={category.id} 
+              category={category} 
+              isDefault={false}
+              onDelete={handleDeleteCategory}
+            />
+          ))}
         </div>
-      </div>
+      </section>
 
-      {/* Пользовательские категории доходов */}
-      {userIncomeCategories.length > 0 && (
-        <div className="mb-8">
-  
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {userIncomeCategories.map(category => (
-              <CategoryCard 
-                key={category.id} 
-                category={category} 
-                isDefault={false}
-                onDelete={handleDeleteCategory}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Стандартные категории расходов */}
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4"> Категории расходов</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+      {/* расход */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>
+          <i className={`${styles.sectionIcon} fas fa-shopping-cart`}></i>
+          Expenses
+          <span className={styles.countBadge}>
+            {defaultExpenseCategories.length + userExpenseCategories.length}
+          </span>
+        </h2>
+        
+        <div className={styles.categoriesGrid}>
           {defaultExpenseCategories.map(category => (
             <CategoryCard 
               key={category.id} 
@@ -180,110 +187,140 @@ export default function CategoriesPage() {
               onDelete={handleDeleteCategory}
             />
           ))}
+          {userExpenseCategories.map(category => (
+            <CategoryCard 
+              key={category.id} 
+              category={category} 
+              isDefault={false}
+              onDelete={handleDeleteCategory}
+            />
+          ))}
         </div>
+      </section>
+
+      {showModal && (
+  <div className={styles.modalOverlay}>
+    <div className={styles.modal}>
+      <div className={styles.modalHeader}>
+        <h2 className={styles.modalTitle}>
+          <i className={`${styles.modalIcon} fas fa-plus-circle`}></i>
+          New category
+        </h2>
+        <button 
+          onClick={() => {
+            setShowModal(false);
+            setShowCustomIconInput(false);
+            setNewCategory({
+              name: '',
+              type: 'expense',
+              icon: '💰',
+              color: '#4CAF50',
+              customIcon: ''
+            });
+          }}
+          className={styles.closeButton}
+        >
+          <i className="fas fa-times"></i>
+        </button>
       </div>
 
-      {/* Пользовательские категории расходов */}
-      {userExpenseCategories.length > 0 && (
-        <div className="mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {userExpenseCategories.map(category => (
-              <CategoryCard 
-                key={category.id} 
-                category={category} 
-                isDefault={false}
-                onDelete={handleDeleteCategory}
-              />
-            ))}
+      <form onSubmit={handleAddCategory} className={styles.modalForm}>
+        {/* Поле выбора типа категории */}
+        <div className={styles.formGroup}>
+          <label className={styles.formLabel}>Type </label>
+          <div className={styles.toggleGroup}>
+            <button
+              type="button"
+              className={`${styles.toggleButton} ${
+                newCategory.type === 'income' ? styles.toggleButtonActive : ''
+              }`}
+              onClick={() => setNewCategory({...newCategory, type: 'income'})}
+            >
+              <i className="fas fa-arrow-down"></i> Income
+            </button>
+            <button
+              type="button"
+              className={`${styles.toggleButton} ${
+                newCategory.type === 'expense' ? styles.toggleButtonActive : ''
+              }`}
+              onClick={() => setNewCategory({...newCategory, type: 'expense'})}
+            >
+              <i className="fas fa-arrow-up"></i> Expenses
+            </button>
           </div>
         </div>
-      )}
 
-      {/* Модальное окно для добавления категории */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Добавить категорию</h2>
-              <button 
-                onClick={() => setShowModal(false)}
-                className="text-gray-500 hover:text-gray-700"
+        {/* Поле названия категории */}
+        <div className={styles.formGroup}>
+          <label htmlFor="categoryName" className={styles.formLabel}>
+            Category name
+          </label>
+          <div className={styles.inputWithIcon}>
+            <i className={`${styles.inputIcon} fas fa-tag`}></i>
+            <input
+              id="categoryName"
+              type="text"
+              value={newCategory.name}
+              onChange={(e) => setNewCategory({...newCategory, name: e.target.value})}
+              className={styles.formInput}
+              placeholder="Example: foods"
+              required
+            />
+          </div>
+        </div>
+
+        {/* Поле выбора иконки */}
+        <div className={styles.formGroup}>
+          <label className={styles.formLabel}>Icons</label>
+          
+          {!showCustomIconInput ? (
+            <>
+              <div className={styles.emojiGrid}>
+                {Object.entries(EMOJI_GROUPS).map(([group, icons]) => (
+                  <details key={group} className={styles.emojiGroup}>
+                    <summary className={styles.emojiGroupTitle}>
+                      <i className={`${styles.groupIcon} fas fa-${
+                        group === 'Food' ? 'utensils' :
+                        group === 'Transport' ? 'car' :
+                        group === 'Finance' ? 'money-bill-wave' :
+                        group === 'Entertainment' ? 'gamepad' :
+                        group === 'Shopping' ? 'shopping-bag' :
+                        group === 'Health' ? 'heartbeat' :
+                        group === 'Education' ? 'graduation-cap' :
+                        group === 'Home' ? 'home' : 'star'                        
+                      }`}></i>
+                      {group}
+                    </summary>
+                    <div className={styles.emojiGroupContent}>
+                      {icons.map(emoji => (
+                        <button
+                          type="button"
+                          key={emoji}
+                          onClick={() => setNewCategory({...newCategory, icon: emoji})}
+                          className={`${styles.emojiButton} ${
+                            newCategory.icon === emoji ? styles.emojiButtonActive : ''
+                          }`}
+                        >
+                          {emoji}
+                        </button>
+                      ))}
+                    </div>
+                  </details>
+                ))}
+              </div>
+              
+              <button
+                type="button"
+                onClick={() => setShowCustomIconInput(true)}
+                className={styles.customIconButton}
               >
-                ✕
+                <i className="fas fa-edit"></i> Upload your own icon
               </button>
-            </div>
-            
-            <form onSubmit={handleAddCategory}>
-              <div className="mb-4">
-                <label className="block mb-2 font-medium">Тип категории:</label>
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    className={`flex-1 py-2 rounded-lg ${newCategory.type === 'income' ? 'bg-green-500 text-white' : 'bg-gray-100'}`}
-                    onClick={() => setNewCategory({...newCategory, type: 'income'})}
-                  >
-                    Доход
-                  </button>
-                  <button
-                    type="button"
-                    className={`flex-1 py-2 rounded-lg ${newCategory.type === 'expense' ? 'bg-red-500 text-white' : 'bg-gray-100'}`}
-                    onClick={() => setNewCategory({...newCategory, type: 'expense'})}
-                  >
-                    Расход
-                  </button>
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label className="block mb-2 font-medium">Название:</label>
-                <input
-                  type="text"
-                  value={newCategory.name}
-                  onChange={(e) => setNewCategory({...newCategory, name: e.target.value})}
-                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
-                />
-              </div>
-
-              <div className="mb-4">
-            <label className="block mb-2 font-medium">Иконка:</label>
-            
-            {!showCustomIconInput ? (
-              <>
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {Object.entries(EMOJI_GROUPS).map(([group, icons]) => (
-                    <details key={group} className="border rounded-lg overflow-hidden">
-                      <summary className="px-3 py-2 bg-gray-100 cursor-pointer">
-                        {group}
-                      </summary>
-                      <div className="grid grid-cols-5 gap-2 p-2">
-                        {icons.map(emoji => (
-                          <button
-                            type="button"
-                            key={emoji}
-                            onClick={() => setNewCategory({...newCategory, icon: emoji})}
-                            className={`p-2 text-2xl hover:bg-gray-100 rounded ${
-                              newCategory.icon === emoji ? 'ring-2 ring-blue-500' : ''
-                            }`}
-                          >
-                            {emoji}
-                          </button>
-                        ))}
-                      </div>
-                    </details>
-                  ))}
-                </div>
-                
-                <button
-                  type="button"
-                  onClick={() => setShowCustomIconInput(true)}
-                  className="text-sm text-blue-500 hover:underline"
-                >
-                  + Своя иконка (эмоджи)
-                </button>
-              </>
-            ) : (
-              <div className="flex items-center gap-2">
+            </>
+          ) : (
+            <div className={styles.customIconContainer}>
+              <div className={styles.inputWithIcon}>
+                <i className={`${styles.inputIcon} fas fa-icons`}></i>
                 <input
                   type="text"
                   value={newCategory.customIcon}
@@ -292,83 +329,92 @@ export default function CategoriesPage() {
                     customIcon: e.target.value,
                     icon: e.target.value
                   })}
-                  className="flex-1 p-2 border rounded"
-                  placeholder="Введите эмоджи"
+                  className={styles.formInput}
+                  placeholder="Enter an emoji (e.g., 🚗)" 
                   maxLength="2"
                 />
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowCustomIconInput(false);
-                    setNewCategory({...newCategory, customIcon: ''});
-                  }}
-                  className="p-2 text-gray-500 hover:text-gray-700"
-                >
-                  ×
-                </button>
               </div>
-            )}
-          </div>
-
-<div className="mb-4">
-  <label className="block mb-2 font-medium">Цвет:</label>
-  <div className="flex items-center gap-4">
-    <input
-      type="color"
-      value={newCategory.color}
-      onChange={(e) => setNewCategory({...newCategory, color: e.target.value})}
-      className="w-16 h-12"
-    />
-    <span 
-      className="p-2 rounded text-xl"
-      style={{ 
-        backgroundColor: newCategory.color + '20',
-        color: newCategory.color
-      }}
-    >
-      {newCategory.icon} Пример
-    </span>
-  </div>
-</div>
-
               <button
-                type="submit"
-                className="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+                type="button"
+                onClick={() => {
+                  setShowCustomIconInput(false);
+                  setNewCategory({...newCategory, customIcon: ''});
+                }}
+                className={styles.cancelCustomIcon}
               >
-                Создать категорию
+                <i className="fas fa-times"></i> Cancel
               </button>
-            </form>
+            </div>
+          )}
+        </div>
+
+        {/* Превью иконки */}
+        <div className={styles.iconPreview}>
+          <span 
+            className={styles.previewIcon}
+            style={{ 
+              backgroundColor: `${newCategory.color}20`,
+              color: newCategory.color
+            }}
+          >
+            {newCategory.icon}
+          </span>
+          <span className={styles.previewText}>
+            This is how your icon will look
+          </span>
+        </div>
+
+        {/* Поле выбора цвета */}
+        <div className={styles.formGroup}>
+          <label className={styles.formLabel}>Category color</label>
+          <div className={styles.colorPickerContainer}>
+            <input
+              type="color"
+              value={newCategory.color}
+              onChange={(e) => setNewCategory({...newCategory, color: e.target.value})}
+              className={styles.colorInput}
+            />
+            <span className={styles.colorValue}>{newCategory.color}</span>
           </div>
         </div>
-      )}
+
+        {/* Кнопка отправки */}
+        <button
+          type="submit"
+          className={styles.submitButton}
+          disabled={!newCategory.name || !newCategory.icon}
+        >
+          <i className="fas fa-check"></i> Create category
+        </button>
+      </form>
+    </div>
+  </div>
+)}
     </div>
   );
 }
 
 function CategoryCard({ category, isDefault, onDelete }) {
   return (
-    <div className="p-4 bg-white rounded-lg shadow-sm border flex justify-between items-center">
-      <div className="flex items-center gap-3">
-        <span 
-          className="text-2xl"
-          style={{ color: category.color }}
-        >
-          {category.icon}
-        </span>
-        <div>
-          <div className="font-medium">{category.name}</div>
-          <div className="text-sm text-gray-500">
-            {isDefault ? 'Стандартная' : 'Пользовательская'}
-          </div>
-        </div>
+    <div className={`${styles.categoryCard} ${isDefault ? styles.defaultCard : ''}`}>
+      <div className={styles.categoryIconWrapper} style={{ backgroundColor: `${category.color}20` }}>
+        <span style={{ color: category.color }}>{category.icon}</span>
       </div>
+      
+      <div className={styles.categoryInfo}>
+        <h3 className={styles.categoryName}>{category.name}</h3>
+        <span className={styles.categoryType}>
+          {isDefault ? 'Default' : 'Custom'}
+        </span>
+      </div>
+      
       {!isDefault && (
         <button 
           onClick={() => onDelete(category.id)}
-          className="text-red-500 hover:text-red-700"
-          title="Удалить категорию"
+          className={styles.deleteButton}
+          title="Delete category"
         >
-          ×
+          <i className="fas fa-trash-alt"></i>
         </button>
       )}
     </div>
