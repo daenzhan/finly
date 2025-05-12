@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import Statistics from './Stats';
+import Statistics from '../components/Stats';
 import { deleteCategory, fetchCategories } from '../redux/actions/categoryActions';
 import { fetchTransactions } from '../redux/actions/transactionActions';
 import styles from '../styles/StatsPage.module.css';

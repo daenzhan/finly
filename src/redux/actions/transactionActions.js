@@ -1,4 +1,3 @@
-// src/redux/actions/transactionActions.js
 import API from '../../api/api';
 import { fetchAccounts } from './accountActions';
 import {

@@ -1,157 +1,130 @@
 {
   "users": [
     {
-      "id": "c1d1",
+      "id": "9377",
       "email": "asel@mail.com",
       "password": "1",
       "name": "Asel",
       "currency": "KZT"
     },
     {
-      "id": "9acb",
-      "email": "a@mail.com",
-      "password": "1",
-      "name": "New User",
-      "currency": "RUB"
-    },
-    {
-      "id": "dd88",
-      "email": "toma@mail.com",
-      "password": "1",
+      "id": "1928",
+      "email": "tamara@mail.com",
+      "password": "7777777",
       "name": "Tamara",
       "currency": "KZT"
     },
     {
-      "id": "97a6",
-      "email": "arushka@mail.com",
-      "password": "1",
+      "id": "7c16",
+      "email": "aruzhan@mail.com",
+      "password": "333",
       "name": "Aruzhan",
+      "currency": "KZT"
+    },
+    {
+      "id": "7911",
+      "email": "toma@mail.com",
+      "password": "1",
+      "name": "toma",
       "currency": "KZT"
     }
   ],
   "accounts": [
     {
-      "id": "7e0e",
-      "name": "Кошелек",
-      "icon": "money-bill-wave",
-      "balance": 0,
-      "userId": "c1d1",
-      "createdAt": "2025-05-12T21:26:24.995Z"
-    },
-    {
-      "id": "24e4",
-      "name": "Инвестиции",
-      "icon": "chart-line",
-      "balance": 0,
-      "userId": "c1d1",
-      "createdAt": "2025-05-12T21:26:24.995Z"
-    },
-    {
-      "id": "fff6",
-      "name": "Банковская карта",
-      "icon": "credit-card",
-      "balance": 44000.020000000004,
-      "userId": "c1d1",
-      "createdAt": "2025-05-12T21:26:24.995Z"
-    },
-    {
-      "id": "88b6",
-      "name": "Halyk",
-      "icon": "wallet",
-      "balance": 47000,
-      "currency": "KZT",
-      "userId": "c1d1",
-      "createdAt": "2025-05-12T21:26:50.079Z"
-    },
-    {
-      "id": "3164",
-      "name": "Wallet",
-      "icon": "money-bill-wave",
-      "balance": 5739.999999999998,
-      "userId": "9acb",
-      "createdAt": "2025-05-12T21:38:59.193Z"
-    },
-    {
-      "id": "a2c0",
-      "name": "Bank Card",
-      "icon": "credit-card",
-      "balance": 9000,
-      "userId": "9acb",
-      "createdAt": "2025-05-12T21:38:59.193Z"
-    },
-    {
-      "id": "c1db",
-      "name": "Investments",
-      "icon": "chart-line",
-      "balance": 0,
-      "userId": "9acb",
-      "createdAt": "2025-05-12T21:38:59.193Z"
-    },
-    {
-      "id": "8b40",
-      "name": "Halyk",
-      "icon": "wallet",
-      "balance": 47000,
-      "currency": "KZT",
-      "userId": "9acb",
-      "createdAt": "2025-05-12T21:51:53.957Z"
-    },
-    {
-      "id": "e58d",
-      "name": "Wallet",
-      "icon": "money-bill-wave",
-      "balance": 10000,
-      "userId": "dd88",
-      "createdAt": "2025-05-12T22:08:38.700Z"
-    },
-    {
-      "id": "e700",
-      "name": "Investments",
-      "icon": "chart-line",
-      "balance": 0,
-      "userId": "dd88",
-      "createdAt": "2025-05-12T22:08:38.701Z"
-    },
-    {
-      "id": "bdc6",
-      "name": "Bank Card",
-      "icon": "credit-card",
-      "balance": 0,
-      "userId": "dd88",
-      "createdAt": "2025-05-12T22:08:38.701Z"
-    },
-    {
-      "id": "f2bb",
-      "name": "Halyk",
-      "icon": "wallet",
-      "balance": 47000,
-      "currency": "KZT",
-      "userId": "dd88",
-      "createdAt": "2025-05-12T22:08:57.534Z"
-    },
-    {
-      "id": "44fe",
+      "id": "f857",
       "name": "Wallet",
       "icon": "money-bill-wave",
       "balance": 0,
-      "userId": "97a6",
-      "createdAt": "2025-05-12T22:13:43.273Z"
+      "userId": "9377",
+      "createdAt": "2025-05-12T22:27:02.495Z"
     },
     {
-      "id": "f25c",
-      "name": "Investments",
-      "icon": "chart-line",
-      "balance": 0,
-      "userId": "97a6",
-      "createdAt": "2025-05-12T22:13:43.273Z"
-    },
-    {
-      "id": "0cbc",
+      "id": "bca6",
       "name": "Bank Card",
       "icon": "credit-card",
       "balance": 0,
-      "userId": "97a6",
-      "createdAt": "2025-05-12T22:13:43.273Z"
+      "userId": "9377",
+      "createdAt": "2025-05-12T22:27:02.495Z"
+    },
+    {
+      "id": "2355",
+      "name": "Investments",
+      "icon": "chart-line",
+      "balance": 0,
+      "userId": "9377",
+      "createdAt": "2025-05-12T22:27:02.495Z"
+    },
+    {
+      "id": "5a72",
+      "name": "Wallet",
+      "icon": "money-bill-wave",
+      "balance": 0,
+      "userId": "1928",
+      "createdAt": "2025-05-12T22:28:38.565Z"
+    },
+    {
+      "id": "6f26",
+      "name": "Bank Card",
+      "icon": "credit-card",
+      "balance": 0,
+      "userId": "1928",
+      "createdAt": "2025-05-12T22:28:38.565Z"
+    },
+    {
+      "id": "c95a",
+      "name": "Investments",
+      "icon": "chart-line",
+      "balance": 0,
+      "userId": "1928",
+      "createdAt": "2025-05-12T22:28:38.565Z"
+    },
+    {
+      "id": "9645",
+      "name": "Wallet",
+      "icon": "money-bill-wave",
+      "balance": 0,
+      "userId": "7c16",
+      "createdAt": "2025-05-12T22:29:10.713Z"
+    },
+    {
+      "id": "4298",
+      "name": "Investments",
+      "icon": "chart-line",
+      "balance": 0,
+      "userId": "7c16",
+      "createdAt": "2025-05-12T22:29:10.713Z"
+    },
+    {
+      "id": "e2a3",
+      "name": "Bank Card",
+      "icon": "credit-card",
+      "balance": 0,
+      "userId": "7c16",
+      "createdAt": "2025-05-12T22:29:10.713Z"
+    },
+    {
+      "id": "a3f9",
+      "name": "Wallet",
+      "icon": "money-bill-wave",
+      "balance": 0,
+      "userId": "7911",
+      "createdAt": "2025-05-12T22:43:31.817Z"
+    },
+    {
+      "id": "03ac",
+      "name": "Bank Card",
+      "icon": "credit-card",
+      "balance": 0,
+      "userId": "7911",
+      "createdAt": "2025-05-12T22:43:31.817Z"
+    },
+    {
+      "id": "7c9d",
+      "name": "Investments",
+      "icon": "chart-line",
+      "balance": 0,
+      "userId": "7911",
+      "createdAt": "2025-05-12T22:43:31.817Z"
     }
   ],
   "transactions": [
@@ -252,5 +225,42 @@
       "categoryId": "default_shopping"
     }
   ],
-  "categories": []
+  "categories": [
+    {
+      "id": "c4b8",
+      "name": "mama",
+      "type": "income",
+      "icon": "❤️",
+      "color": "#ae534c",
+      "customIcon": "",
+      "userId": "1928"
+    },
+    {
+      "id": "a06d",
+      "name": "mama",
+      "type": "income",
+      "icon": "❤️",
+      "color": "#07043e",
+      "customIcon": "",
+      "userId": "7c16"
+    },
+    {
+      "id": "58a1",
+      "name": "game",
+      "type": "expense",
+      "icon": "🎮",
+      "color": "#4c5cae",
+      "customIcon": "",
+      "userId": "7c16"
+    },
+    {
+      "id": "3f1e",
+      "name": "mama",
+      "type": "income",
+      "icon": "❤️",
+      "color": "#614cae",
+      "customIcon": "",
+      "userId": "7911"
+    }
+  ]
 }

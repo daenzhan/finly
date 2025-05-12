@@ -1,6 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
 
 const PrivateRoute = () => {
   const { user, loading } = useSelector(state => state.auth);

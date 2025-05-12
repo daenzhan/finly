@@ -1,4 +1,3 @@
-// src/redux/reducers/transactionReducer.js
 import {
   FETCH_TRANSACTIONS_REQUEST,
   FETCH_TRANSACTIONS_SUCCESS,

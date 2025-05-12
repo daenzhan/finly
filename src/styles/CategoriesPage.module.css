@@ -322,6 +322,7 @@
     border-radius: 12px;
     font-size: 1rem;
     transition: all 0.2s ease;
+   
   }
   
   .formInput:focus {
@@ -432,6 +433,7 @@
     align-items: center;
     gap: 8px;
     transition: all 0.2s ease;
+    margin-left: 55px;
   }
   
   .cancelCustomIcon:hover {
@@ -592,7 +594,11 @@
       flex-direction: column;
       text-align: center;
       gap: 0.5rem;
+      position: relative;
     }
+    .categoryCard:hover .deleteButton {
+        opacity: 1;
+      }
   
     .categoryIconWrapper {
       width: 40px;

@@ -1,4 +1,3 @@
-// src/redux/actions/categoryActions.js
 import API from '../../api/api';
 import {
   FETCH_CATEGORIES_REQUEST,

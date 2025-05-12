@@ -1,4 +1,3 @@
-// src/redux/reducers/accountReducer.js
 import {
   FETCH_ACCOUNTS_REQUEST,
   FETCH_ACCOUNTS_SUCCESS,

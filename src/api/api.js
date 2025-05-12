@@ -29,8 +29,6 @@ API.interceptors.response.use(
       toast.error('Превышено время ожидания ответа сервера');
     } else if (error.message === 'Network Error') {
       toast.error('Сервер недоступен. Проверьте подключение к интернету.');
-    } else if (error.response?.data?.message) {
-      toast.error(error.response.data.message);
     } else {
       toast.error('Произошла ошибка. Пожалуйста, попробуйте позже.');
     }

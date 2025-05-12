@@ -1,4 +1,3 @@
-// src/redux/reducers/categoryReducer.js
 import {
     FETCH_CATEGORIES_REQUEST,
     FETCH_CATEGORIES_SUCCESS,

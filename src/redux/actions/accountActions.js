@@ -1,4 +1,3 @@
-// src/redux/actions/accountActions.js
 import API from '../../api/api';
 import {
   FETCH_ACCOUNTS_REQUEST,

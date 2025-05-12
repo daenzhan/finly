@@ -11,7 +11,7 @@ import {
 } from '../redux/actions/transactionActions';
 import { fetchCategories } from '../redux/actions/categoryActions';
 import { toast } from 'react-toastify';
-import LogoutButton from '../components/LogoutButton';
+import LogoutButton from './LogoutButton';
 import styles from '../styles/Dashboard.module.css';
 
 const currencySymbols = {
