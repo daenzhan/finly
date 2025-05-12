@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUserThunk } from '../auth/authThunks';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+
 
 export default function Login() {
   const [email, setEmail] = useState('');

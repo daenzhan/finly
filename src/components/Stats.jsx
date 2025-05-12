@@ -1,31 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Pie, Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title } from 'chart.js';
+import { defaultIncomeCategories, defaultExpenseCategories } from './categories';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title);
 
 const Statistics = ({ 
-  incomesByCategory = [], 
-  expensesByCategory = [], 
+  transactions = [],
   currencySymbol = '₽',
-  transactions = []
+  incomesByCategory = [],
+  expensesByCategory = []
 }) => {
-  // Стандартные категории доходов
-  const defaultIncomeCategories = [
-    { id: 'default_salary', name: 'Зарплата', color: '#4CAF50' },
-    { id: 'default_bonus', name: 'Премия', color: '#8BC34A' },
-    { id: 'default_other_income', name: 'Другие доходы', color: '#CDDC39' }
-  ];
-
-  // Стандартные категории расходов
-  const defaultExpenseCategories = [
-    { id: 'default_food', name: 'Еда', color: '#F44336' },
-    { id: 'default_transport', name: 'Транспорт', color: '#E91E63' },
-    { id: 'default_utilities', name: 'Коммунальные услуги', color: '#9C27B0' },
-    { id: 'default_entertainment', name: 'Развлечения', color: '#673AB7' }
-  ];
-
-  // Состояние для фильтрации по дате
   const [dateRange, setDateRange] = useState(() => {
     const savedRange = localStorage.getItem('statsDateRange');
     return savedRange ? JSON.parse(savedRange) : {
@@ -34,44 +19,59 @@ const Statistics = ({
     };
   });
 
-  // Сохраняем выбранный диапазон дат
   useEffect(() => {
     localStorage.setItem('statsDateRange', JSON.stringify(dateRange));
   }, [dateRange]);
 
-  // Фильтруем транзакции по выбранному периоду
   const filteredTransactions = transactions.filter(tx => {
     const txDate = new Date(tx.date).toISOString().split('T')[0];
     return txDate >= dateRange.start && txDate <= dateRange.end;
   });
 
-  // Подсчет сумм по всем категориям (стандартные + пользовательские)
-  const calculateCategoryTotals = (categories, type) => {
-    return categories.map(category => {
-      const total = filteredTransactions
-        .filter(tx => {
-          // Для стандартных категорий проверяем по имени
-          if (category.id.startsWith('default_')) {
-            return tx.category === category.name && tx.type === type;
-          }
-          // Для пользовательских категорий проверяем по id
-          return tx.categoryId === category.id && tx.type === type;
-        })
-        .reduce((sum, tx) => sum + (type === 'income' ? tx.amount : Math.abs(tx.amount)), 0);
-      
-      return {
-        ...category,
-        total: parseFloat(total.toFixed(2))
+  const calculateCategoryTotals = (type) => {
+    const result = {};
+
+    // Инициализируем все категории данного типа
+    const defaultCategories = type === 'income' 
+      ? [...defaultIncomeCategories, ...incomesByCategory]
+      : [...defaultExpenseCategories, ...expensesByCategory];
+
+    defaultCategories.forEach(cat => {
+      result[cat.id] = {
+        ...cat,
+        total: 0
       };
-    }).filter(c => c.total > 0);
+    });
+
+    // Добавляем "Неизвестную категорию"
+    result['unknown'] = {
+      id: 'unknown',
+      name: 'Неизвестная категория',
+      color: '#CCCCCC',
+      total: 0
+    };
+
+    // Агрегируем суммы
+    filteredTransactions
+      .filter(tx => tx.type === type)
+      .forEach(tx => {
+        const categoryId = tx.categoryId || 'unknown';
+        if (!result[categoryId]) {
+          result[categoryId] = {
+            ...getCategoryById(categoryId),
+            total: 0
+          };
+        }
+        result[categoryId].total += Math.abs(tx.amount);
+      });
+
+    return Object.values(result)
+      .map(item => ({ ...item, total: parseFloat(item.total.toFixed(2)) }))
+      .filter(item => item.total > 0);
   };
 
-  // Объединяем все категории
-  const allIncomeCategories = [...defaultIncomeCategories, ...incomesByCategory];
-  const allExpenseCategories = [...defaultExpenseCategories, ...expensesByCategory];
-
-  const incomeData = calculateCategoryTotals(allIncomeCategories, 'income');
-  const expenseData = calculateCategoryTotals(allExpenseCategories, 'expense');
+  const incomeData = calculateCategoryTotals('income');
+  const expenseData = calculateCategoryTotals('expense');
 
   // Подготовка данных для PieChart
   const preparePieData = (categories) => ({
@@ -110,13 +110,16 @@ const Statistics = ({
         month: `${monthName} ${year}`,
         income: monthTransactions
           .filter(tx => tx.type === 'income')
-          .reduce((sum, tx) => sum + (tx.amount || 0), 0),
+          .reduce((sum, tx) => sum + Math.abs(tx.amount), 0),
         expense: monthTransactions
           .filter(tx => tx.type === 'expense')
-          .reduce((sum, tx) => sum + Math.abs(tx.amount || 0), 0)
+          .reduce((sum, tx) => sum + Math.abs(tx.amount), 0)
       };
     });
   };
+
+  // Остальной код рендеринга остается без изменений
+  // ...
 
   const barChartData = {
     labels: prepareBarData().map(m => m.month),
@@ -161,6 +164,26 @@ const Statistics = ({
     }
   };
 
+  const getCategoryById = (categoryId) => {
+    // Объединяем все возможные категории
+    const allCategories = [
+      ...defaultIncomeCategories,
+      ...defaultExpenseCategories,
+      ...incomesByCategory,
+      ...expensesByCategory
+    ];
+    
+    const foundCategory = allCategories.find(c => c.id === categoryId);
+    
+    return foundCategory || {
+      id: 'unknown',
+      name: 'Неизвестная категория',
+      color: '#CCCCCC'
+    };
+  };
+  
+
+  
   return (
     <div className="p-4 max-w-6xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Статистика</h1>

@@ -17,6 +17,7 @@ import {
   DELETE_TRANSACTION_FAILURE,
 } from '../types';
 
+
 export const fetchTransactions = (userId) => async (dispatch) => {
   dispatch({ type: FETCH_TRANSACTIONS_REQUEST });
   try {
@@ -118,28 +119,36 @@ export const deleteTransaction = (transactionId) => async (dispatch, getState) =
   
   try {
     // 1. Получаем данные транзакции перед удалением
-    const transaction = getState().transactions.data.find(t => t.id === transactionId);
+    const state = getState();
+    const transaction = state.transactions.data.find(t => t.id === transactionId);
     
     if (!transaction) {
       throw new Error('Транзакция не найдена');
     }
 
-    // 2. Удаляем транзакцию
+    // 2. Удаляем транзакцию с сервера
     await API.delete(`/transactions/${transactionId}`);
     
     // 3. Обновляем баланс счета
-    const account = getState().accounts.data.find(a => a.id === transaction.accountId);
+    const account = state.accounts.data.find(a => a.id === transaction.accountId);
     if (account) {
-      const newBalance = Money.subtract(account.balance, transaction.amount);
-      await API.patch(`/accounts/${account.id}`, { balance: Money.to(newBalance) });
+      const newBalance = account.balance - transaction.amount; // Упростим вычисление
+      await API.patch(`/accounts/${account.id}`, { balance: newBalance });
+      
+      // Обновляем состояние счета
+      dispatch({
+        type: UPDATE_ACCOUNT_SUCCESS,
+        payload: { ...account, balance: newBalance }
+      });
     }
 
+    // 4. Обновляем список транзакций
     dispatch({ 
       type: DELETE_TRANSACTION_SUCCESS,
       payload: transactionId
     });
     
-    // 4. Обновляем данные
+    // 5. Получаем свежие данные (опционально, можно убрать если все обновляется локально)
     dispatch(fetchAccounts(transaction.userId));
     dispatch(fetchTransactions(transaction.userId));
     

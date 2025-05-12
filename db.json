@@ -83,6 +83,20 @@
       "password": "555",
       "name": "arusha",
       "currency": "KZT"
+    },
+    {
+      "id": "fd28",
+      "email": "test@mail.com",
+      "password": "777",
+      "name": "Test",
+      "currency": "KZT"
+    },
+    {
+      "id": "7437",
+      "email": "A@mail.com",
+      "password": "777",
+      "name": "Asel",
+      "currency": "KZT"
     }
   ],
   "accounts": [
@@ -475,6 +489,54 @@
       "currency": "USD",
       "userId": "524b",
       "createdAt": "2025-05-11T19:57:44.042Z"
+    },
+    {
+      "id": "a7ed",
+      "name": "Кошелек",
+      "icon": "money-bill-wave",
+      "balance": 54000,
+      "userId": "fd28",
+      "createdAt": "2025-05-12T13:14:11.166Z"
+    },
+    {
+      "id": "d235",
+      "name": "Банковская карта",
+      "icon": "credit-card",
+      "balance": 0,
+      "userId": "fd28",
+      "createdAt": "2025-05-12T13:14:11.166Z"
+    },
+    {
+      "id": "655b",
+      "name": "Инвестиции",
+      "icon": "chart-line",
+      "balance": 0,
+      "userId": "fd28",
+      "createdAt": "2025-05-12T13:14:11.166Z"
+    },
+    {
+      "id": "710e",
+      "name": "Кошелек",
+      "icon": "money-bill-wave",
+      "balance": 0,
+      "userId": "7437",
+      "createdAt": "2025-05-12T15:08:40.870Z"
+    },
+    {
+      "id": "2647",
+      "name": "Банковская карта",
+      "icon": "credit-card",
+      "balance": 0,
+      "userId": "7437",
+      "createdAt": "2025-05-12T15:08:40.870Z"
+    },
+    {
+      "id": "8f01",
+      "name": "Инвестиции",
+      "icon": "chart-line",
+      "balance": 0,
+      "userId": "7437",
+      "createdAt": "2025-05-12T15:08:40.870Z"
     }
   ],
   "transactions": [
@@ -980,6 +1042,30 @@
       "icon": "🎮",
       "color": "#784cae",
       "userId": "524b"
+    },
+    {
+      "id": "56e1",
+      "name": "игра",
+      "type": "expense",
+      "icon": "💰",
+      "color": "#4c6dae",
+      "userId": "fd28"
+    },
+    {
+      "id": "9402",
+      "name": "сестра",
+      "type": "income",
+      "icon": "💰",
+      "color": "#9b4b5f",
+      "userId": "fd28"
+    },
+    {
+      "id": "e214",
+      "name": "игра",
+      "type": "expense",
+      "icon": "💰",
+      "color": "#4c5cae",
+      "userId": "7437"
     }
   ]
 }

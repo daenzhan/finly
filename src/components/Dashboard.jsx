@@ -9,8 +9,9 @@ import {
   updateTransaction,
   deleteTransaction
 } from '../redux/actions/transactionActions';
-import { fetchCategories, addCategory, deleteCategory } from '../redux/actions/categoryActions';
+import { fetchCategories } from '../redux/actions/categoryActions';
 import { toast } from 'react-toastify';
+import LogoutButton from '../components/LogoutButton';
 
 const currencySymbols = {
   RUB: '₽',
@@ -47,12 +48,7 @@ export default function Dashboard() {
     end: new Date().toISOString().split('T')[0]
   });
   
-  const [newCategory, setNewCategory] = useState({
-    name: '',
-    type: 'expense',
-    icon: '💰',
-    color: '#4CAF50'
-  });
+ 
   
   const [newAccount, setNewAccount] = useState({
     name: '',
@@ -127,37 +123,51 @@ export default function Dashboard() {
     setTransactionType('income');
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    const amount = parseFloat(formData.amount);
-    if (isNaN(amount) || amount <= 0) {
-      toast.error('Введите корректную сумму');
-      return;
-    }
+  // В функции handleSubmit обновите создание транзакции:
+const handleSubmit = async (e) => {
+  e.preventDefault();
   
-    const signedAmount = transactionType === 'income' ? amount : -amount;
-  
-    const newTransaction = {
-      userId: user.id,
-      accountId: formData.accountId,
-      categoryId: formData.categoryId,
-      amount: signedAmount,
-      date: formData.date,
-      comment: formData.comment,
-      type: transactionType,
-      createdAt: new Date().toISOString()
-    };
-  
-    try {
-      await dispatch(addTransaction(newTransaction));
-      setShowModal(false);
-      resetForm();
-      toast.success('Транзакция успешно добавлена');
-    } catch (error) {
-      toast.error('Не удалось добавить транзакцию');
-    }
+  const amount = parseFloat(formData.amount);
+  if (isNaN(amount) || amount <= 0) {
+    toast.error('Введите корректную сумму');
+    return;
+  }
+
+  // Находим выбранную категорию
+  const selectedCategory = [
+    ...defaultIncomeCategories,
+    ...defaultExpenseCategories,
+    ...userIncomeCategories,
+    ...userExpenseCategories
+  ].find(c => c.id === formData.categoryId);
+
+  if (!selectedCategory) {
+    toast.error('Выберите категорию');
+    return;
+  }
+
+  const newTransaction = {
+    userId: user.id,
+    accountId: formData.accountId,
+    amount: transactionType === 'income' ? amount : -amount,
+    date: formData.date,
+    comment: formData.comment,
+    type: transactionType,
+    createdAt: new Date().toISOString(),
+    // Важно сохранять оба поля!
+    category: selectedCategory.name,
+    categoryId: selectedCategory.id
   };
+
+  try {
+    await dispatch(addTransaction(newTransaction));
+    setShowModal(false);
+    resetForm();
+    toast.success('Транзакция успешно добавлена');
+  } catch (error) {
+    toast.error('Не удалось добавить транзакцию');
+  }
+};
 
   const handleEditTransaction = (tx) => {
     setEditingTransaction(tx);
@@ -215,26 +225,6 @@ export default function Dashboard() {
     }
   };
 
-  const handleAddCategory = async (e) => {
-    e.preventDefault();
-    try {
-      await dispatch(addCategory({
-        ...newCategory,
-        userId: user.id
-      }));
-      setShowCategoryModal(false);
-      setNewCategory({
-        name: '',
-        type: 'expense',
-        icon: '💰',
-        color: '#4CAF50'
-      });
-      toast.success('Категория добавлена');
-    } catch (error) {
-      toast.error('Не удалось добавить категорию');
-    }
-  };
-
   const handleAddAccount = async (e) => {
     e.preventDefault();
     try {
@@ -257,22 +247,6 @@ export default function Dashboard() {
     }
   };
 
-  const handleDeleteCategory = async (categoryId) => {
-    const confirmMessage = `Вы уверены, что хотите удалить эту категорию? 
-      ${defaultIncomeCategories.concat(defaultExpenseCategories).some(c => c.id === categoryId) 
-        ? 'Это стандартная категория, она будет скрыта.' 
-        : 'Все связанные транзакции останутся без категории.'}`;
-    
-    if (window.confirm(confirmMessage)) {
-      try {
-        await dispatch(deleteCategory(categoryId));
-        toast.success('Категория удалена');
-      } catch (error) {
-        toast.error(error.message || 'Не удалось удалить категорию');
-      }
-    }
-  };
-
   const calculateTransactions = () => {
     if (!filteredTransactions || !Array.isArray(filteredTransactions)) {
       return {
@@ -283,44 +257,47 @@ export default function Dashboard() {
       };
     }
   
+    // Создаем полный список всех категорий
+    const allCategories = [
+      ...defaultIncomeCategories,
+      ...defaultExpenseCategories,
+      ...userIncomeCategories,
+      ...userExpenseCategories
+    ];
+  
+    // Функция для группировки транзакций по категориям
+    const groupByCategory = (transactions, type) => {
+      const result = {};
+      
+      // Инициализируем все категории
+      allCategories
+        .filter(c => c.type === type)
+        .forEach(cat => {
+          result[cat.id] = {
+            ...cat,
+            total: 0
+          };
+        });
+  
+      // Считаем суммы
+      transactions.forEach(tx => {
+        const categoryId = tx.categoryId;
+        if (result[categoryId]) {
+          result[categoryId].total += Math.abs(tx.amount);
+        }
+      });
+  
+      return Object.values(result).filter(c => c.total > 0);
+    };
+  
     const incomeTransactions = filteredTransactions.filter(tx => tx.type === 'income');
     const expenseTransactions = filteredTransactions.filter(tx => tx.type === 'expense');
   
-    // Доходы по категориям
-    const incomesByCategory = incomeCategories.map(category => {
-      const categoryTotal = incomeTransactions
-        .filter(tx => tx.categoryId === category.id)
-        .reduce((sum, tx) => sum + (tx.amount || 0), 0);
-      
-      return {
-        ...category,
-        total: categoryTotal,
-        percentage: incomeTransactions.length > 0 
-          ? Math.round((categoryTotal / incomeTransactions.reduce((sum, tx) => sum + (tx.amount || 0), 0)) * 100) 
-          : 0
-      };
-    });
-  
-    // Расходы по категориям
-    const expensesByCategory = expenseCategories.map(category => {
-      const categoryTotal = expenseTransactions
-        .filter(tx => tx.categoryId === category.id)
-        .reduce((sum, tx) => sum + Math.abs(tx.amount || 0), 0);
-      
-      return {
-        ...category,
-        total: categoryTotal,
-        percentage: expenseTransactions.length > 0 
-          ? Math.round((categoryTotal / expenseTransactions.reduce((sum, tx) => sum + Math.abs(tx.amount || 0), 0)) * 100) 
-          : 0
-      };
-    });
-  
     return { 
-      totalIncome: incomeTransactions.reduce((sum, tx) => sum + (tx.amount || 0), 0),
-      totalExpense: expenseTransactions.reduce((sum, tx) => sum + Math.abs(tx.amount || 0), 0),
-      incomesByCategory, 
-      expensesByCategory 
+      totalIncome: incomeTransactions.reduce((sum, tx) => sum + Math.abs(tx.amount), 0),
+      totalExpense: expenseTransactions.reduce((sum, tx) => sum + Math.abs(tx.amount), 0),
+      incomesByCategory: groupByCategory(incomeTransactions, 'income'),
+      expensesByCategory: groupByCategory(expenseTransactions, 'expense')
     };
   };
 
@@ -351,6 +328,12 @@ export default function Dashboard() {
          className="inline-block mb-6 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
         >
          Перейти к статистике →
+      </Link>
+      <Link 
+        to="/categories" 
+        className="inline-block mb-6 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+         >
+            Управление категориями →
       </Link>
       
       {/* Общий баланс */}
@@ -496,15 +479,6 @@ export default function Dashboard() {
         title="Добавить транзакцию"
       >
         +
-      </button>
-      
-      {/* Кнопка управления категориями */}
-      <button 
-        onClick={() => setShowCategoryModal(true)}
-        className="fixed bottom-24 right-6 bg-green-500 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl hover:bg-green-600 transition-colors"
-        title="Управление категориями"
-      >
-        🗂
       </button>
 
       {/* Кнопка добавления счета */}
@@ -665,90 +639,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Модальное окно для добавления категории */}
-      {showCategoryModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Добавить категорию</h2>
-              <button 
-                onClick={() => setShowCategoryModal(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                ✕
-              </button>
-            </div>
-            
-            <form onSubmit={handleAddCategory}>
-              <div className="mb-4">
-                <label className="block mb-2 font-medium">Тип категории:</label>
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    className={`flex-1 py-2 rounded-lg ${newCategory.type === 'income' ? 'bg-green-500 text-white' : 'bg-gray-100'}`}
-                    onClick={() => setNewCategory({...newCategory, type: 'income'})}
-                  >
-                    Доход
-                  </button>
-                  <button
-                    type="button"
-                    className={`flex-1 py-2 rounded-lg ${newCategory.type === 'expense' ? 'bg-red-500 text-white' : 'bg-gray-100'}`}
-                    onClick={() => setNewCategory({...newCategory, type: 'expense'})}
-                  >
-                    Расход
-                  </button>
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label className="block mb-2 font-medium">Название:</label>
-                <input
-                  type="text"
-                  value={newCategory.name}
-                  onChange={(e) => setNewCategory({...newCategory, name: e.target.value})}
-                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="block mb-2 font-medium">Иконка:</label>
-                <input
-                  type="text"
-                  value={newCategory.icon}
-                  onChange={(e) => setNewCategory({...newCategory, icon: e.target.value})}
-                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
-                  maxLength="2"
-                />
-                <p className="text-sm text-gray-500 mt-1">Введите эмодзи (например: 🍎, 🚕, 💰)</p>
-              </div>
-
-              <div className="mb-4">
-                <label className="block mb-2 font-medium">Цвет:</label>
-                <div className="flex items-center gap-4">
-                  <input
-                    type="color"
-                    value={newCategory.color}
-                    onChange={(e) => setNewCategory({...newCategory, color: e.target.value})}
-                    className="w-16 h-12"
-                  />
-                  <span className="p-2 rounded" style={{ backgroundColor: newCategory.color }}>
-                    {newCategory.icon} Пример
-                  </span>
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
-              >
-                Создать категорию
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
+      
 
       {/* Модальное окно для добавления счета */}
         {showAccountModal && (
@@ -813,7 +704,9 @@ export default function Dashboard() {
            </form>
          </div>
        </div>
-     )}       
+     )}   
+
+     <LogoutButton />    
     </div>
   );
 }

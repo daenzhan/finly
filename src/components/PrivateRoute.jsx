@@ -12,7 +12,6 @@ const PrivateRoute = () => {
   );
   
   if (!user) {
-    toast.error('Для доступа требуется авторизация');
     return <Navigate to="/login" replace />;
   }
   
