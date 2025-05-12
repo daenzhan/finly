@@ -7,18 +7,18 @@ import { toast } from 'react-toastify';
 import styles from '../styles/CategoriesPage.module.css'
 
 const defaultIncomeCategories = [
-  { id: 'default_salary', name: 'Зарплата', icon: '💼', color: '#4CAF50', type: 'income' },
-  { id: 'default_scholarship', name: 'Стипендия', icon: '🎓', color: '#8BC34A', type: 'income' },
-  { id: 'default_pension', name: 'Пенсия', icon: '👵', color: '#CDDC39', type: 'income' },
-  { id: 'default_other_income', name: 'Другое', icon: '💰', color: '#FFC107', type: 'income' }
+  { id: 'default_salary', name: 'Salary', icon: '💼', color: '#4CAF50', type: 'income' },
+  { id: 'default_scholarship', name: 'Scholarship', icon: '🎓', color: '#8BC34A', type: 'income' },
+  { id: 'default_pension', name: 'Pension', icon: '👵', color: '#CDDC39', type: 'income' },
+  { id: 'default_other_income', name: 'Other', icon: '💰', color: '#FFC107', type: 'income' }
 ];
 
 const defaultExpenseCategories = [
-  { id: 'default_transport', name: 'Транспорт', icon: '🚕', color: '#F44336', type: 'expense' },
-  { id: 'default_products', name: 'Продукты', icon: '🍎', color: '#E91E63', type: 'expense' },
-  { id: 'default_shopping', name: 'Покупки', icon: '🛍️', color: '#9C27B0', type: 'expense' },
-  { id: 'default_entertainment', name: 'Развлечения', icon: '🎬', color: '#673AB7', type: 'expense' },
-  { id: 'default_other_expense', name: 'Другое', icon: '💸', color: '#3F51B5', type: 'expense' }
+  { id: 'default_transport', name: 'Transport', icon: '🚕', color: '#F44336', type: 'expense' },
+  { id: 'default_products', name: 'Food', icon: '🍎', color: '#E91E63', type: 'expense' },
+  { id: 'default_shopping', name: 'Shopping', icon: '🛍️', color: '#9C27B0', type: 'expense' },
+  { id: 'default_entertainment', name: 'Entertainment', icon: '🎬', color: '#673AB7', type: 'expense' },
+  { id: 'default_other_expense', name: 'Other', icon: '💸', color: '#3F51B5', type: 'expense' }
 ];
 
 const EMOJI_GROUPS = {
@@ -66,7 +66,7 @@ export default function CategoriesPage() {
     e.preventDefault();
     
     if (!newCategory.icon) {
-      toast.error('Выберите иконку');
+      toast.error('Please select an icon');
       return;
     }
   
@@ -88,24 +88,24 @@ export default function CategoriesPage() {
       });
       setShowCustomIconInput(false);
       
-      toast.success('Категория добавлена');
+      toast.success('Category added successfully');
     } catch (error) {
-      toast.error('Не удалось добавить категорию');
+      toast.error('Failed to add category');
     }
   };
 
   const handleDeleteCategory = async (categoryId) => {
-    const confirmMessage = `Вы уверены, что хотите удалить эту категорию? 
+    const confirmMessage = `Are you sure you want to delete this category? 
       ${defaultIncomeCategories.concat(defaultExpenseCategories).some(c => c.id === categoryId) 
-        ? 'Это стандартная категория, она будет скрыта.' 
-        : 'Все связанные транзакции останутся без категории.'}`;
+        ? 'This is a default category, it will be hidden.' 
+        : 'All related transactions will remain without a category.'}`;
     
     if (window.confirm(confirmMessage)) {
       try {
         await dispatch(deleteCategory(categoryId));
-        toast.success('Категория удалена');
+        toast.success('Category deleted');
       } catch (error) {
-        toast.error(error.message || 'Не удалось удалить категорию');
+        toast.error(error.message || 'Failed to delete category');
       }
     }
   };
@@ -116,8 +116,8 @@ export default function CategoriesPage() {
     </div>
   );
   
-  if (error) return <div className="p-4 text-red-500">Ошибка: {error}</div>;
-  if (!user) return <div className="p-4">Пользователь не авторизован</div>;
+  if (error) return <div className="p-4 text-red-500">Error: {error}</div>;
+  if (!user) return <div className="p-4">User not authorized</div>;
 
   return (
     <div className={styles.container}>

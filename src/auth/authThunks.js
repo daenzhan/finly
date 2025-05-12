@@ -3,9 +3,9 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 
 const DEFAULT_ACCOUNTS = [
-  { name: "Кошелек: ", icon: "money-bill-wave", balance: 0 },
-  { name: "Банковская карта: ", icon: "credit-card", balance: 0 },
-  { name: "Инвестиции: ", icon: "chart-line", balance: 0 }
+  { name: "Wallet", icon: "money-bill-wave", balance: 0 },
+  { name: "Bank Card", icon: "credit-card", balance: 0 },
+  { name: "Investments", icon: "chart-line", balance: 0 }
 ];
 
 const handleApiError = (error, defaultMessage) => {
@@ -23,7 +23,7 @@ export const checkAuthThunk = createAsyncThunk(
       const user = JSON.parse(localStorage.getItem('user'));
       
       if (!token || !user?.id) {
-        return rejectWithValue('Требуется авторизация');
+        return rejectWithValue('Authorization required');
       }
       
       const res = await API.get(`/users/${user.id}`);
@@ -31,7 +31,7 @@ export const checkAuthThunk = createAsyncThunk(
     } catch (err) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      return rejectWithValue(handleApiError(err, 'Ошибка проверки авторизации'));
+      return rejectWithValue(handleApiError(err, 'Authorization check failed'));
     }
   }
 );
@@ -43,14 +43,14 @@ export const registerUserThunk = createAsyncThunk(
       // Проверка существующего пользователя
       const existing = await API.get(`/users?email=${email}`);
       if (existing.data.length > 0) {
-        return rejectWithValue('Пользователь с таким email уже существует');
+        return rejectWithValue('A user with this email already exists');
       }
       
       // Создание нового пользователя
       const newUser = {
         email,
         password,
-        name: name || 'Новый пользователь',
+        name: name || 'New User',
         currency: currency || 'RUB',
       };
       
@@ -73,10 +73,10 @@ export const registerUserThunk = createAsyncThunk(
       localStorage.setItem('token', userId);
       localStorage.setItem('user', JSON.stringify(userData));
       
-      toast.success('Регистрация прошла успешно!');
+      toast.success('Registration successful!');
       return userData;
     } catch (err) {
-      return rejectWithValue(handleApiError(err, 'Ошибка регистрации'));
+      return rejectWithValue(handleApiError(err, 'Registration error'));
     }
   }
 );
@@ -88,7 +88,7 @@ export const loginUserThunk = createAsyncThunk(
       const res = await API.get(`/users?email=${email}&password=${password}`);
       
       if (!res.data || res.data.length === 0) {
-        return rejectWithValue('Неверный email или пароль');
+        return rejectWithValue('Invalid email or password');
       }
       
       const userData = res.data[0];
@@ -101,10 +101,10 @@ export const loginUserThunk = createAsyncThunk(
       const accountsRes = await API.get(`/accounts?userId=${userData.id}`);
       userData.accounts = accountsRes.data || [];
       
-      toast.success(`Добро пожаловать, ${userData.name || userData.email}!`);
+      toast.success(`Welcome, ${userData.name || userData.email}!`);
       return userData;
     } catch (err) {
-      return rejectWithValue(handleApiError(err, 'Ошибка входа'));
+      return rejectWithValue(handleApiError(err, 'Login error'));
     }
   }
 );
@@ -121,10 +121,10 @@ export const addAccountThunk = createAsyncThunk(
       };
       
       const response = await API.post('/accounts', newAccount);
-      toast.success(`Счет "${newAccount.name}" успешно создан`);
+      toast.success(`Account "${newAccount.name}" created successfully`);
       return response.data;
     } catch (err) {
-      return rejectWithValue(handleApiError(err, 'Ошибка создания счета'));
+      return rejectWithValue(handleApiError(err, 'Error creating account'));
     }
   }
 );
@@ -136,7 +136,7 @@ export const fetchUserAccountsThunk = createAsyncThunk(
       const response = await API.get(`/accounts?userId=${userId}`);
       return response.data;
     } catch (err) {
-      return rejectWithValue(handleApiError(err, 'Ошибка загрузки счетов'));
+      return rejectWithValue(handleApiError(err, 'Error loading accounts'));
     }
   }
 );

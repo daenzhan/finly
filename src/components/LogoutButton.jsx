@@ -19,7 +19,7 @@ export default function LogoutButton() {
       className={styles.logoutButton}
     >
       <i className={`${styles.icon} fas fa-sign-out-alt`}></i>
-      Выйти
+      Logout
     </button>
   );
 }

@@ -22,18 +22,18 @@ const currencySymbols = {
 };
 
 const defaultIncomeCategories = [
-  { id: 'default_salary', name: 'Зарплата', icon: '💼', color: '#4CAF50', type: 'income' },
-  { id: 'default_scholarship', name: 'Стипендия', icon: '🎓', color: '#8BC34A', type: 'income' },
-  { id: 'default_pension', name: 'Пенсия', icon: '👵', color: '#CDDC39', type: 'income' },
-  { id: 'default_other_income', name: 'Другое', icon: '💰', color: '#FFC107', type: 'income' }
+  { id: 'default_salary', name: 'Salary', icon: '💼', color: '#4CAF50', type: 'income' },
+  { id: 'default_scholarship', name: 'Scholarship', icon: '🎓', color: '#8BC34A', type: 'income' },
+  { id: 'default_pension', name: 'Pension', icon: '👵', color: '#CDDC39', type: 'income' },
+  { id: 'default_other_income', name: 'Other', icon: '💰', color: '#FFC107', type: 'income' }
 ];
 
 const defaultExpenseCategories = [
-  { id: 'default_transport', name: 'Транспорт', icon: '🚕', color: '#F44336', type: 'expense' },
-  { id: 'default_products', name: 'Продукты', icon: '🍎', color: '#E91E63', type: 'expense' },
-  { id: 'default_shopping', name: 'Покупки', icon: '🛍️', color: '#9C27B0', type: 'expense' },
-  { id: 'default_entertainment', name: 'Развлечения', icon: '🎬', color: '#673AB7', type: 'expense' },
-  { id: 'default_other_expense', name: 'Другое', icon: '💸', color: '#3F51B5', type: 'expense' }
+  { id: 'default_transport', name: 'Transport', icon: '🚕', color: '#F44336', type: 'expense' },
+  { id: 'default_products', name: 'Groceries', icon: '🍎', color: '#E91E63', type: 'expense' },
+  { id: 'default_shopping', name: 'Shopping', icon: '🛍️', color: '#9C27B0', type: 'expense' },
+  { id: 'default_entertainment', name: 'Entertainment', icon: '🎬', color: '#673AB7', type: 'expense' },
+  { id: 'default_other_expense', name: 'Other', icon: '💸', color: '#3F51B5', type: 'expense' }
 ];
 
 export default function Dashboard() {
@@ -103,6 +103,11 @@ export default function Dashboard() {
     return txDate >= new Date(dateRange.start) && txDate <= new Date(dateRange.end);
   }) || [];
 
+  const calculateTotalBalance = () => {
+    if (!accounts || !Array.isArray(accounts)) return 0;
+    return accounts.reduce((sum, acc) => sum + (parseFloat(acc.balance) || 0), 0);
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -123,8 +128,8 @@ export default function Dashboard() {
     e.preventDefault();
     
     const amount = parseFloat(formData.amount);
-    if (isNaN(amount) || amount <= 0) {
-      toast.error('Введите корректную сумму');
+    if (isNaN(amount) ){
+      toast.error('Please enter a valid amount');
       return;
     }
 
@@ -136,7 +141,7 @@ export default function Dashboard() {
     ].find(c => c.id === formData.categoryId);
 
     if (!selectedCategory) {
-      toast.error('Выберите категорию');
+      toast.error('Please select a category');
       return;
     }
 
@@ -156,9 +161,9 @@ export default function Dashboard() {
       await dispatch(addTransaction(newTransaction));
       setShowModal(false);
       resetForm();
-      toast.success('Транзакция успешно добавлена');
+      toast.success('Transaction added successfully');
     } catch (error) {
-      toast.error('Не удалось добавить транзакцию');
+      toast.error('Failed to add transaction');
     }
   };
 
@@ -179,8 +184,8 @@ export default function Dashboard() {
     e.preventDefault();
     
     const amount = parseFloat(formData.amount);
-    if (isNaN(amount) || amount <= 0) {
-      toast.error('Введите корректную сумму');
+    if (isNaN(amount)) {
+      toast.error('Please enter a valid amount');
       return;
     }
   
@@ -201,19 +206,19 @@ export default function Dashboard() {
       setShowModal(false);
       setEditingTransaction(null);
       resetForm();
-      toast.success('Транзакция обновлена');
+      toast.success('Transaction updated successfully');
     } catch (error) {
-      toast.error('Не удалось обновить транзакцию');
+      toast.error('Failed to update transaction');
     }
   };
 
   const handleDeleteTransaction = async (txId) => {
-    if (window.confirm('Вы уверены, что хотите удалить эту транзакцию?')) {
+    if (window.confirm('Are you sure you want to delete this transaction?')) {
       try {
         await dispatch(deleteTransaction(txId));
-        toast.success('Транзакция удалена');
+        toast.success('Transaction deleted');
       } catch (error) {
-        toast.error(error.message || 'Не удалось удалить транзакцию');
+        toast.error(error.message || 'Failed to delete transaction');
       }
     }
   };
@@ -224,6 +229,7 @@ export default function Dashboard() {
       await dispatch(addAccount({
         ...newAccount,
         userId: user.id,
+        balance: parseFloat(newAccount.balance) || 0,
         createdAt: new Date().toISOString()
       }));
       setShowAccountModal(false);
@@ -233,10 +239,10 @@ export default function Dashboard() {
         balance: 0,
         currency: user?.currency || 'RUB'
       });
-      toast.success('Счет успешно добавлен');
+      toast.success('Account added successfully');
     } catch (error) {
-      console.error("Ошибка при создании счета:", error);
-      toast.error(error.response?.data?.message || 'Не удалось добавить счет');
+      console.error("Error creating account:", error);
+      toast.error(error.response?.data?.message || 'Failed to add account');
     }
   };
 
@@ -291,8 +297,7 @@ export default function Dashboard() {
   };
 
   const { totalIncome, totalExpense } = calculateTransactions();
-  const balance = totalIncome - totalExpense;
-
+  const totalBalance = calculateTotalBalance();
   const getCurrencySymbol = (currency = user?.currency) => {
     return currencySymbols[currency] || currency;
   };
@@ -303,13 +308,13 @@ export default function Dashboard() {
     </div>
   );
   
-  if (error) return <div className={styles.error}>Ошибка: {error}</div>;
-  if (!user) return <div className={styles.error}>Пользователь не авторизован</div>;
+  if (error) return <div className={styles.error}>Error: {error}</div>;
+  if (!user) return <div className={styles.error}>User not authorized</div>;
 
   return (
     <div className={styles.container}>
       <h1 className={styles.welcomeTitle}>
-        Добро пожаловать в Finly, {user.name || user.email}!
+        Welcome to Finly, {user.name || user.email}!
       </h1>
 
       <div className={styles.linksContainer}>
@@ -317,30 +322,30 @@ export default function Dashboard() {
           to="/stats" 
           className={`${styles.link} ${styles.linkPrimary}`}
         >
-          <i className="fas fa-chart-bar"></i> Перейти к статистике
+          <i className="fas fa-chart-bar"></i> View Statistics
         </Link>
         <Link 
           to="/categories" 
           className={`${styles.link} ${styles.linkSecondary}`}
         >
-          <i className="fas fa-tags"></i> Управление категориями
+          <i className="fas fa-tags"></i> Manage Categories
         </Link>
       </div>
       
       {/* Общий баланс */}
       <div className={styles.balanceCard}>
         <div className={styles.balanceHeader}>
-          <h2 className={styles.balanceTitle}>Общий баланс</h2>
-          <div className={`${styles.balanceAmount} ${balance >= 0 ? styles.positive : styles.negative}`}>
-            {Money.format(balance)} {getCurrencySymbol()}
+          <h2 className={styles.balanceTitle}>Total Balance</h2>
+          <div className={`${styles.balanceAmount} ${totalBalance >= 0 ? styles.positive : styles.negative}`}>
+            {Money.format(totalBalance)} {getCurrencySymbol()}
           </div>
         </div>
         <div className={styles.balanceSummary}>
           <div className={styles.income}>
-            Доходы: +{Money.format(totalIncome)} {getCurrencySymbol()}
+            Income: +{Money.format(totalIncome)} {getCurrencySymbol()}
           </div>
           <div className={styles.expense}>
-            Расходы: -{Money.format(totalExpense)} {getCurrencySymbol()}
+            Expenses: -{Money.format(totalExpense)} {getCurrencySymbol()}
           </div>
         </div>
       </div>
@@ -348,7 +353,7 @@ export default function Dashboard() {
       {/* Фильтр по дате */}
       <div className={styles.dateFilter}>
         <div className={styles.dateGroup}>
-          <label className={styles.dateLabel}>С:</label>
+          <label className={styles.dateLabel}>From:</label>
           <input
             type="date"
             value={dateRange.start}
@@ -357,7 +362,7 @@ export default function Dashboard() {
           />
         </div>
         <div className={styles.dateGroup}>
-          <label className={styles.dateLabel}>По:</label>
+          <label className={styles.dateLabel}>To:</label>
           <input
             type="date"
             value={dateRange.end}
@@ -370,18 +375,16 @@ export default function Dashboard() {
       {/* Блок счетов */}
       <div className={styles.accountsSection}>
         <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>Ваши счета</h2>
+          <h2 className={styles.sectionTitle}>Your Accounts</h2>
           <span className={styles.sectionSubtitle}>
-            Общий баланс: {Money.format(
-              accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0)
-            )} {getCurrencySymbol()}
+            Total balance: {Money.format(totalBalance)} {getCurrencySymbol()}
           </span>
         </div>
         <div className={styles.accountsGrid}>
           {accounts.map((acc) => (
             <div key={acc.id} className={styles.accountCard}>
               <div className={styles.accountContent}>
-                <span className={styles.accountName}>{acc.name}</span>
+                <span className={styles.accountName}>{acc.name}: </span>
                 <span className={acc.balance >= 0 ? styles.positive : styles.negative}>
                   {Money.format(acc.balance)} {getCurrencySymbol(acc.currency)}
                 </span>
@@ -393,9 +396,9 @@ export default function Dashboard() {
 
       {/* История транзакций */}
       <div className={styles.transactionsSection}>
-        <h2 className={styles.sectionTitle}>История транзакций</h2>
+        <h2 className={styles.sectionTitle}>Transaction History</h2>
         {filteredTransactions.length === 0 ? (
-          <p className={styles.emptyState}>Нет транзакций за выбранный период</p>
+          <p className={styles.emptyState}>No transactions for selected period</p>
         ) : (
           <div className={styles.transactionsList}>
             {filteredTransactions
@@ -418,7 +421,7 @@ export default function Dashboard() {
                         {category?.icon || '💸'}
                       </span>
                       <div className={styles.transactionDetails}>
-                        <div className={styles.transactionCategory}>{category?.name || 'Неизвестно'}</div>
+                        <div className={styles.transactionCategory}>{category?.name || 'Unknown'}</div>
                         <div className={styles.transactionMeta}>
                           {account?.name} • {new Date(tx.date).toLocaleDateString()}
                           {tx.comment && ` • "${tx.comment}"`}
@@ -436,14 +439,14 @@ export default function Dashboard() {
                         <button 
                           onClick={() => handleEditTransaction(tx)}
                           className={styles.actionButton}
-                          title="Редактировать"
+                          title="Edit"
                         >
                           <i className="fas fa-edit"></i>
                         </button>
                         <button 
                           onClick={() => handleDeleteTransaction(tx.id)}
                           className={`${styles.actionButton} ${styles.deleteButton}`}
-                          title="Удалить транзакцию"
+                          title="Delete transaction"
                         >
                           <i className="fas fa-trash-alt"></i>
                         </button>
@@ -460,7 +463,7 @@ export default function Dashboard() {
       <button 
         onClick={() => setShowModal(true)}
         className={styles.addButton}
-        title="Добавить транзакцию"
+        title="Add transaction"
       >
         <i className="fas fa-plus"></i>
       </button>
@@ -469,7 +472,7 @@ export default function Dashboard() {
       <button 
         onClick={() => setShowAccountModal(true)}
         className={`${styles.addButton} ${styles.addAccountButton}`}
-        title="Добавить счет"
+        title="Add account"
       >
         <i className="fas fa-wallet"></i>
       </button>
@@ -480,7 +483,7 @@ export default function Dashboard() {
           <div className={styles.modal}>
             <div className={styles.modalHeader}>
               <h2 className={styles.modalTitle}>
-                {editingTransaction ? 'Редактировать транзакцию' : 'Добавить транзакцию'}
+                {editingTransaction ? 'Edit Transaction' : 'Add Transaction'}
               </h2>
               <button 
                 onClick={() => {
@@ -496,7 +499,7 @@ export default function Dashboard() {
             
             <form onSubmit={editingTransaction ? handleUpdateTransaction : handleSubmit} className={styles.modalBody}>
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Тип транзакции:</label>
+                <label className={styles.formLabel}>Transaction Type:</label>
                 <div className={styles.toggleGroup}>
                   <button
                     type="button"
@@ -505,7 +508,7 @@ export default function Dashboard() {
                     }`}
                     onClick={() => setTransactionType('income')}
                   >
-                    <i className="fas fa-arrow-down"></i> Доход
+                    <i className="fas fa-arrow-down"></i> Income
                   </button>
                   <button
                     type="button"
@@ -514,13 +517,13 @@ export default function Dashboard() {
                     }`}
                     onClick={() => setTransactionType('expense')}
                   >
-                    <i className="fas fa-arrow-up"></i> Расход
+                    <i className="fas fa-arrow-up"></i> Expense
                   </button>
                 </div>
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Счет:</label>
+                <label className={styles.formLabel}>Account:</label>
                 <select
                   name="accountId"
                   value={formData.accountId}
@@ -528,7 +531,7 @@ export default function Dashboard() {
                   className={`${styles.formControl} ${styles.selectControl}`}
                   required
                 >
-                  <option value="">Выберите счет</option>
+                  <option value="">Select account</option>
                   {accounts.map(acc => (
                     <option key={acc.id} value={acc.id}>{acc.name}</option>
                   ))}
@@ -536,7 +539,7 @@ export default function Dashboard() {
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Категория:</label>
+                <label className={styles.formLabel}>Category:</label>
                 <select
                   name="categoryId"
                   value={formData.categoryId}
@@ -544,7 +547,7 @@ export default function Dashboard() {
                   className={`${styles.formControl} ${styles.selectControl}`}
                   required
                 >
-                  <option value="">Выберите категорию</option>
+                  <option value="">Select category</option>
                   {transactionType === 'income' ? (
                     incomeCategories.map(cat => (
                       <option key={cat.id} value={cat.id}>
@@ -562,9 +565,8 @@ export default function Dashboard() {
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Сумма:     <i className={`${styles.inputIcon} fas fa-${getCurrencySymbol().replace('₽', 'ruble-sign').replace('$', 'dollar-sign').replace('€', 'euro-sign').replace('₸', 'tenge')}`}></i></label>
+                <label className={styles.formLabel}>Amount:     <i className={`${styles.inputIcon} fas fa-${getCurrencySymbol().replace('₽', 'ruble-sign').replace('$', 'dollar-sign').replace('€', 'euro-sign').replace('₸', 'tenge')}`}></i></label>
                 <div className={styles.inputWithIcon}>
-              
                   <input
                     type="number"
                     name="amount"
@@ -580,7 +582,7 @@ export default function Dashboard() {
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Дата:</label>
+                <label className={styles.formLabel}>Date:</label>
                 <input
                   type="date"
                   name="date"
@@ -592,14 +594,14 @@ export default function Dashboard() {
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Комментарий:</label>
+                <label className={styles.formLabel}>Comment:</label>
                 <input
                   type="text"
                   name="comment"
                   value={formData.comment}
                   onChange={handleInputChange}
                   className={styles.formControl}
-                  placeholder="Необязательно"
+                  placeholder="Optional"
                 />
               </div>
 
@@ -608,7 +610,7 @@ export default function Dashboard() {
                   type="submit"
                   className={styles.submitButton}
                 >
-                  <i className="fas fa-check"></i> {editingTransaction ? 'Обновить' : 'Добавить'}
+                  <i className="fas fa-check"></i> {editingTransaction ? 'Update' : 'Add'}
                 </button>
                 {editingTransaction && (
                   <button
@@ -616,7 +618,7 @@ export default function Dashboard() {
                     className={`${styles.submitButton} ${styles.dangerButton}`}
                     onClick={() => handleDeleteTransaction(editingTransaction.id)}
                   >
-                    <i className="fas fa-trash-alt"></i> Удалить
+                    <i className="fas fa-trash-alt"></i> Delete
                   </button>
                 )}
               </div>
@@ -630,7 +632,7 @@ export default function Dashboard() {
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
             <div className={styles.modalHeader}>
-              <h2 className={styles.modalTitle}>Добавить счет</h2>
+              <h2 className={styles.modalTitle}>Add Account</h2>
               <button 
                 onClick={() => setShowAccountModal(false)}
                 className={styles.closeButton}
@@ -641,7 +643,7 @@ export default function Dashboard() {
             
             <form onSubmit={handleAddAccount} className={styles.modalBody}>
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Название счета:</label>
+                <label className={styles.formLabel}>Account Name:</label>
                 <input
                   type="text"
                   value={newAccount.name}
@@ -652,7 +654,7 @@ export default function Dashboard() {
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Валюта:</label>
+                <label className={styles.formLabel}>Currency:</label>
                 <select
                   value={newAccount.currency}
                   onChange={(e) => setNewAccount({...newAccount, currency: e.target.value})}
@@ -666,13 +668,13 @@ export default function Dashboard() {
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Начальный баланс:</label>
+                <label className={styles.formLabel}>Initial Balance:</label>
                 <input
                   type="number"
                   value={newAccount.balance}
                   onChange={(e) => setNewAccount({
                     ...newAccount, 
-                    balance: Math.max(0, parseFloat(e.target.value) || 0)
+                    balance: parseFloat(e.target.value) || 0
                   })}
                   className={styles.formControl}
                   step="0.01"
@@ -684,7 +686,7 @@ export default function Dashboard() {
                 type="submit"
                 className={styles.submitButton}
               >
-                <i className="fas fa-check"></i> Создать счет
+                <i className="fas fa-check"></i> Create Account
               </button>
             </form>
           </div>

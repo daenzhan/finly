@@ -1,93 +1,254 @@
 {
   "users": [
     {
-      "id": "507b",
-      "email": "aruzhan@mail.com",
-      "password": "1",
-      "name": "Arusha",
-      "currency": "KZT"
-    },
-    {
-      "id": "f2f5",
+      "id": "c1d1",
       "email": "asel@mail.com",
       "password": "1",
       "name": "Asel",
+      "currency": "KZT"
+    },
+    {
+      "id": "9acb",
+      "email": "a@mail.com",
+      "password": "1",
+      "name": "New User",
+      "currency": "RUB"
+    },
+    {
+      "id": "dd88",
+      "email": "toma@mail.com",
+      "password": "1",
+      "name": "Tamara",
+      "currency": "KZT"
+    },
+    {
+      "id": "97a6",
+      "email": "arushka@mail.com",
+      "password": "1",
+      "name": "Aruzhan",
       "currency": "KZT"
     }
   ],
   "accounts": [
     {
-      "id": "5f30",
-      "name": "Кошелек: ",
+      "id": "7e0e",
+      "name": "Кошелек",
       "icon": "money-bill-wave",
       "balance": 0,
-      "userId": "507b",
-      "createdAt": "2025-05-12T20:44:44.181Z"
+      "userId": "c1d1",
+      "createdAt": "2025-05-12T21:26:24.995Z"
     },
     {
-      "id": "7ffb",
-      "name": "Банковская карта: ",
-      "icon": "credit-card",
-      "balance": 142700.02,
-      "userId": "507b",
-      "createdAt": "2025-05-12T20:44:44.181Z"
-    },
-    {
-      "id": "aafb",
-      "name": "Инвестиции: ",
+      "id": "24e4",
+      "name": "Инвестиции",
       "icon": "chart-line",
       "balance": 0,
-      "userId": "507b",
-      "createdAt": "2025-05-12T20:44:44.181Z"
+      "userId": "c1d1",
+      "createdAt": "2025-05-12T21:26:24.995Z"
     },
     {
-      "id": "d765",
-      "name": "Кошелек: ",
+      "id": "fff6",
+      "name": "Банковская карта",
+      "icon": "credit-card",
+      "balance": 44000.020000000004,
+      "userId": "c1d1",
+      "createdAt": "2025-05-12T21:26:24.995Z"
+    },
+    {
+      "id": "88b6",
+      "name": "Halyk",
+      "icon": "wallet",
+      "balance": 47000,
+      "currency": "KZT",
+      "userId": "c1d1",
+      "createdAt": "2025-05-12T21:26:50.079Z"
+    },
+    {
+      "id": "3164",
+      "name": "Wallet",
+      "icon": "money-bill-wave",
+      "balance": 5739.999999999998,
+      "userId": "9acb",
+      "createdAt": "2025-05-12T21:38:59.193Z"
+    },
+    {
+      "id": "a2c0",
+      "name": "Bank Card",
+      "icon": "credit-card",
+      "balance": 9000,
+      "userId": "9acb",
+      "createdAt": "2025-05-12T21:38:59.193Z"
+    },
+    {
+      "id": "c1db",
+      "name": "Investments",
+      "icon": "chart-line",
+      "balance": 0,
+      "userId": "9acb",
+      "createdAt": "2025-05-12T21:38:59.193Z"
+    },
+    {
+      "id": "8b40",
+      "name": "Halyk",
+      "icon": "wallet",
+      "balance": 47000,
+      "currency": "KZT",
+      "userId": "9acb",
+      "createdAt": "2025-05-12T21:51:53.957Z"
+    },
+    {
+      "id": "e58d",
+      "name": "Wallet",
+      "icon": "money-bill-wave",
+      "balance": 10000,
+      "userId": "dd88",
+      "createdAt": "2025-05-12T22:08:38.700Z"
+    },
+    {
+      "id": "e700",
+      "name": "Investments",
+      "icon": "chart-line",
+      "balance": 0,
+      "userId": "dd88",
+      "createdAt": "2025-05-12T22:08:38.701Z"
+    },
+    {
+      "id": "bdc6",
+      "name": "Bank Card",
+      "icon": "credit-card",
+      "balance": 0,
+      "userId": "dd88",
+      "createdAt": "2025-05-12T22:08:38.701Z"
+    },
+    {
+      "id": "f2bb",
+      "name": "Halyk",
+      "icon": "wallet",
+      "balance": 47000,
+      "currency": "KZT",
+      "userId": "dd88",
+      "createdAt": "2025-05-12T22:08:57.534Z"
+    },
+    {
+      "id": "44fe",
+      "name": "Wallet",
       "icon": "money-bill-wave",
       "balance": 0,
-      "userId": "f2f5",
-      "createdAt": "2025-05-12T21:07:53.181Z"
+      "userId": "97a6",
+      "createdAt": "2025-05-12T22:13:43.273Z"
     },
     {
-      "id": "f4d6",
-      "name": "Инвестиции: ",
+      "id": "f25c",
+      "name": "Investments",
       "icon": "chart-line",
       "balance": 0,
-      "userId": "f2f5",
-      "createdAt": "2025-05-12T21:07:53.181Z"
+      "userId": "97a6",
+      "createdAt": "2025-05-12T22:13:43.273Z"
     },
     {
-      "id": "92fd",
-      "name": "Банковская карта: ",
+      "id": "0cbc",
+      "name": "Bank Card",
       "icon": "credit-card",
       "balance": 0,
-      "userId": "f2f5",
-      "createdAt": "2025-05-12T21:07:53.181Z"
+      "userId": "97a6",
+      "createdAt": "2025-05-12T22:13:43.273Z"
     }
   ],
   "transactions": [
     {
-      "id": "fa3a",
-      "userId": "507b",
-      "accountId": "7ffb",
-      "amount": 145000,
-      "date": "2025-05-07",
+      "id": "05f4",
+      "userId": "c1d1",
+      "accountId": "fff6",
+      "amount": 54000,
+      "date": "2025-05-12",
       "comment": "",
       "type": "income",
-      "createdAt": "2025-05-12T20:45:51.647Z",
-      "category": "Зарплата",
+      "createdAt": "2025-05-12T21:27:34.500Z",
+      "category": "Стипендия",
+      "categoryId": "default_scholarship"
+    },
+    {
+      "id": "8130",
+      "userId": "c1d1",
+      "accountId": "fff6",
+      "amount": -9999.98,
+      "date": "2025-05-12",
+      "comment": "",
+      "type": "expense",
+      "createdAt": "2025-05-12T21:28:24.377Z",
+      "category": "Продукты",
+      "categoryId": "default_products"
+    },
+    {
+      "id": "95d8",
+      "userId": "9acb",
+      "accountId": "3164",
+      "amount": 10000,
+      "date": "2025-05-12",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-12T21:49:36.920Z",
+      "category": "Scholarship",
+      "categoryId": "default_scholarship"
+    },
+    {
+      "id": "0e8c",
+      "userId": "9acb",
+      "accountId": "a2c0",
+      "amount": 10000,
+      "date": "2025-05-12",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-12T21:49:58.681Z",
+      "category": "Salary",
       "categoryId": "default_salary"
     },
     {
-      "id": "4cff",
-      "userId": "507b",
-      "accountId": "7ffb",
-      "amount": -2299.98,
+      "id": "d47e",
+      "userId": "9acb",
+      "accountId": "3164",
+      "amount": -4260,
       "date": "2025-05-12",
-      "comment": "popeyes",
+      "comment": "",
       "type": "expense",
-      "createdAt": "2025-05-12T20:46:53.752Z",
-      "category": "Покупки",
+      "createdAt": "2025-05-12T21:50:32.000Z",
+      "category": "Transport",
+      "categoryId": "default_transport"
+    },
+    {
+      "id": "be20",
+      "userId": "9acb",
+      "accountId": "a2c0",
+      "amount": -1000,
+      "date": "2025-05-12",
+      "comment": "",
+      "type": "expense",
+      "createdAt": "2025-05-12T21:50:55.986Z",
+      "category": "Other",
+      "categoryId": "default_other_expense"
+    },
+    {
+      "id": "ec76",
+      "userId": "dd88",
+      "accountId": "e58d",
+      "amount": 10000,
+      "date": "2025-05-12",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-12T22:09:35.627Z",
+      "category": "Salary",
+      "categoryId": "default_salary"
+    },
+    {
+      "id": "ca41",
+      "userId": "dd88",
+      "accountId": "f2bb",
+      "amount": -7000,
+      "date": "2025-05-12",
+      "comment": "",
+      "type": "expense",
+      "createdAt": "2025-05-12T22:10:38.011Z",
+      "category": "Shopping",
       "categoryId": "default_shopping"
     }
   ],
