@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Money } from '../utils';
-import { fetchAccounts, addAccount } from '../redux/actions/accountActions';
+import { get_accounts_action, add_account_action } from '../redux/actions/accountActions';
 import {
-  fetchTransactions,
-  addTransaction,
-  updateTransaction,
-  deleteTransaction
+  get_transactions_action,
+  add_transaction_action,
+  update_transaction_action,
+  delete_transaction_action
 } from '../redux/actions/transactionActions';
 import { fetchCategories } from '../redux/actions/categoryActions';
 import { toast } from 'react-toastify';
@@ -21,14 +21,14 @@ const currencySymbols = {
   KZT: '₸',
 };
 
-const defaultIncomeCategories = [
+const start_income_category = [
   { id: 'default_salary', name: 'Salary', icon: '💼', color: '#4CAF50', type: 'income' },
   { id: 'default_scholarship', name: 'Scholarship', icon: '🎓', color: '#8BC34A', type: 'income' },
   { id: 'default_pension', name: 'Pension', icon: '👵', color: '#CDDC39', type: 'income' },
   { id: 'default_other_income', name: 'Other', icon: '💰', color: '#FFC107', type: 'income' }
 ];
 
-const defaultExpenseCategories = [
+const start_expense_category = [
   { id: 'default_transport', name: 'Transport', icon: '🚕', color: '#F44336', type: 'expense' },
   { id: 'default_products', name: 'Groceries', icon: '🍎', color: '#E91E63', type: 'expense' },
   { id: 'default_shopping', name: 'Shopping', icon: '🛍️', color: '#9C27B0', type: 'expense' },
@@ -86,34 +86,34 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (user?.id) {
-      dispatch(fetchAccounts(user.id));
-      dispatch(fetchTransactions(user.id));
+      dispatch(get_accounts_action(user.id));
+      dispatch(get_transactions_action(user.id));
       dispatch(fetchCategories(user.id));
     }
   }, [dispatch, user?.id]);
 
-  const userIncomeCategories = categories?.filter(cat => cat.type === 'income') || [];
-  const userExpenseCategories = categories?.filter(cat => cat.type === 'expense') || [];
+  const user_income_category = categories?.filter(cat => cat.type === 'income') || [];
+  const user_expense_category = categories?.filter(cat => cat.type === 'expense') || [];
 
-  const incomeCategories = [...defaultIncomeCategories, ...userIncomeCategories];
-  const expenseCategories = [...defaultExpenseCategories, ...userExpenseCategories];
+  const total_income_category = [...start_income_category, ...user_income_category];
+  const total_expense_category = [...start_expense_category, ...user_expense_category];
 
-  const filteredTransactions = transactions?.filter(tx => {
+  const filtered_transactions = transactions?.filter(tx => {
     const txDate = new Date(tx.date);
     return txDate >= new Date(dateRange.start) && txDate <= new Date(dateRange.end);
   }) || [];
 
-  const calculateTotalBalance = () => {
+  const calculate_total_balance = () => {
     if (!accounts || !Array.isArray(accounts)) return 0;
     return accounts.reduce((sum, acc) => sum + (parseFloat(acc.balance) || 0), 0);
   };
 
-  const handleInputChange = (e) => {
+  const input_change = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const resetForm = () => {
+  const reset_form = () => {
     setFormData({
       accountId: '',
       categoryId: '',
@@ -124,28 +124,28 @@ export default function Dashboard() {
     setTransactionType('income');
   };
 
-  const handleSubmit = async (e) => {
+  const submit = async (e) => {
     e.preventDefault();
     
     const amount = parseFloat(formData.amount);
     if (isNaN(amount) ){
-      toast.error('Please enter a valid amount');
+      toast.error('Please enter a valid amount!');
       return;
     }
 
-    const selectedCategory = [
-      ...defaultIncomeCategories,
-      ...defaultExpenseCategories,
-      ...userIncomeCategories,
-      ...userExpenseCategories
+    const selected_category = [
+      ...start_income_category,
+      ...start_expense_category,
+      ...user_income_category,
+      ...user_expense_category
     ].find(c => c.id === formData.categoryId);
 
-    if (!selectedCategory) {
-      toast.error('Please select a category');
+    if (!selected_category) {
+      toast.error('Please select a category!');
       return;
     }
 
-    const newTransaction = {
+    const new_transaction = {
       userId: user.id,
       accountId: formData.accountId,
       amount: transactionType === 'income' ? amount : -amount,
@@ -153,21 +153,21 @@ export default function Dashboard() {
       comment: formData.comment,
       type: transactionType,
       createdAt: new Date().toISOString(),
-      category: selectedCategory.name,
-      categoryId: selectedCategory.id
+      category: selected_category.name,
+      categoryId: selected_category.id
     };
 
     try {
-      await dispatch(addTransaction(newTransaction));
+      await dispatch(add_transaction_action(new_transaction));
       setShowModal(false);
-      resetForm();
-      toast.success('Transaction added successfully');
+      reset_form();
+      toast.success('Transaction added successfully! ^^');
     } catch (error) {
-      toast.error('Failed to add transaction');
+      toast.error('Failed to add transaction!(');
     }
   };
 
-  const handleEditTransaction = (tx) => {
+  const edit_transaction = (tx) => {
     setEditingTransaction(tx);
     setTransactionType(tx.type);
     setFormData({
@@ -180,16 +180,16 @@ export default function Dashboard() {
     setShowModal(true);
   };
 
-  const handleUpdateTransaction = async (e) => {
+  const update_transaction = async (e) => {
     e.preventDefault();
     
     const amount = parseFloat(formData.amount);
     if (isNaN(amount)) {
-      toast.error('Please enter a valid amount');
+      toast.error('Please enter a valid amount! :3');
       return;
     }
   
-    const updatedTransaction = {
+    const updated_transaction = {
       id: editingTransaction.id,
       userId: editingTransaction.userId,
       accountId: formData.accountId,
@@ -202,31 +202,31 @@ export default function Dashboard() {
     };
   
     try {
-      await dispatch(updateTransaction(updatedTransaction));
+      await dispatch(update_transaction_action(updated_transaction));
       setShowModal(false);
       setEditingTransaction(null);
-      resetForm();
-      toast.success('Transaction updated successfully');
+      reset_form();
+      toast.success('Transaction updated successfully! ^^');
     } catch (error) {
-      toast.error('Failed to update transaction');
+      toast.error('Failed to update transaction!(');
     }
   };
 
-  const handleDeleteTransaction = async (txId) => {
+  const delete_transaction = async (txId) => {
     if (window.confirm('Are you sure you want to delete this transaction?')) {
       try {
-        await dispatch(deleteTransaction(txId));
-        toast.success('Transaction deleted');
+        await dispatch(delete_transaction_action(txId));
+        toast.success('Transaction deleted!');
       } catch (error) {
-        toast.error(error.message || 'Failed to delete transaction');
+        toast.error(error.message || 'Failed to delete transaction!(');
       }
     }
   };
 
-  const handleAddAccount = async (e) => {
+  const add_account = async (e) => {
     e.preventDefault();
     try {
-      await dispatch(addAccount({
+      await dispatch(add_account_action({
         ...newAccount,
         userId: user.id,
         balance: parseFloat(newAccount.balance) || 0,
@@ -239,15 +239,15 @@ export default function Dashboard() {
         balance: 0,
         currency: user?.currency || 'RUB'
       });
-      toast.success('Account added successfully');
+      toast.success('Account added successfully!^^');
     } catch (error) {
       console.error("Error creating account:", error);
-      toast.error(error.response?.data?.message || 'Failed to add account');
+      toast.error(error.response?.data?.message || 'Failed to add account!(');
     }
   };
 
-  const calculateTransactions = () => {
-    if (!filteredTransactions || !Array.isArray(filteredTransactions)) {
+  const calculate_transactions = () => {
+    if (!filtered_transactions || !Array.isArray(filtered_transactions)) {
       return {
         totalIncome: 0,
         totalExpense: 0,
@@ -257,10 +257,10 @@ export default function Dashboard() {
     }
   
     const allCategories = [
-      ...defaultIncomeCategories,
-      ...defaultExpenseCategories,
-      ...userIncomeCategories,
-      ...userExpenseCategories
+      ...start_income_category,
+      ...start_expense_category,
+      ...user_income_category,
+      ...user_expense_category
     ];
   
     const groupByCategory = (transactions, type) => {
@@ -285,8 +285,8 @@ export default function Dashboard() {
       return Object.values(result).filter(c => c.total > 0);
     };
   
-    const incomeTransactions = filteredTransactions.filter(tx => tx.type === 'income');
-    const expenseTransactions = filteredTransactions.filter(tx => tx.type === 'expense');
+    const incomeTransactions = filtered_transactions.filter(tx => tx.type === 'income');
+    const expenseTransactions = filtered_transactions.filter(tx => tx.type === 'expense');
   
     return { 
       totalIncome: incomeTransactions.reduce((sum, tx) => sum + Math.abs(tx.amount), 0),
@@ -296,8 +296,8 @@ export default function Dashboard() {
     };
   };
 
-  const { totalIncome, totalExpense } = calculateTransactions();
-  const totalBalance = calculateTotalBalance();
+  const { totalIncome, totalExpense } = calculate_transactions();
+  const totalBalance = calculate_total_balance();
   const getCurrencySymbol = (currency = user?.currency) => {
     return currencySymbols[currency] || currency;
   };
@@ -332,7 +332,7 @@ export default function Dashboard() {
         </Link>
       </div>
       
-      {/* Общий баланс */}
+      {/* ---- ОБЩИЙ БАЛАНС ---- */}
       <div className={styles.balanceCard}>
         <div className={styles.balanceHeader}>
           <h2 className={styles.balanceTitle}>Total Balance</h2>
@@ -350,7 +350,7 @@ export default function Dashboard() {
         </div>
       </div>
       
-      {/* Фильтр по дате */}
+       {/* ---- ФИЛЬТР!!! ---- */}
       <div className={styles.dateFilter}>
         <div className={styles.dateGroup}>
           <label className={styles.dateLabel}>From:</label>
@@ -372,7 +372,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Блок счетов */}
+      {/* ---- СЧЕТА ---- */}
       <div className={styles.accountsSection}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>Your Accounts</h2>
@@ -394,17 +394,17 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* История транзакций */}
+       {/* ---- история трансакции ---- */}
       <div className={styles.transactionsSection}>
         <h2 className={styles.sectionTitle}>Transaction History</h2>
-        {filteredTransactions.length === 0 ? (
+        {filtered_transactions.length === 0 ? (
           <p className={styles.emptyState}>No transactions for selected period</p>
         ) : (
           <div className={styles.transactionsList}>
-            {filteredTransactions
+            {filtered_transactions
               .sort((a, b) => new Date(b.date) - new Date(a.date))
               .map(tx => {
-                const category = [...incomeCategories, ...expenseCategories]
+                const category = [...total_income_category, ...total_expense_category]
                   .find(cat => cat.id === tx.categoryId);
                 const account = accounts.find(acc => acc.id === tx.accountId);
                 
@@ -437,14 +437,14 @@ export default function Dashboard() {
                       </div>
                       <div className={styles.transactionActions}>
                         <button 
-                          onClick={() => handleEditTransaction(tx)}
+                          onClick={() => edit_transaction(tx)}
                           className={styles.actionButton}
                           title="Edit"
                         >
                           <i className="fas fa-edit"></i>
                         </button>
                         <button 
-                          onClick={() => handleDeleteTransaction(tx.id)}
+                          onClick={() => delete_transaction(tx.id)}
                           className={`${styles.actionButton} ${styles.deleteButton}`}
                           title="Delete transaction"
                         >
@@ -459,7 +459,6 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* Кнопка добавления транзакции */}
       <button 
         onClick={() => setShowModal(true)}
         className={styles.addButton}
@@ -467,8 +466,6 @@ export default function Dashboard() {
       >
         <i className="fas fa-plus"></i>
       </button>
-
-      {/* Кнопка добавления счета */}
       <button 
         onClick={() => setShowAccountModal(true)}
         className={`${styles.addButton} ${styles.addAccountButton}`}
@@ -477,7 +474,6 @@ export default function Dashboard() {
         <i className="fas fa-wallet"></i>
       </button>
       
-      {/* Модальное окно для добавления/редактирования транзакции */}
       {showModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
@@ -489,7 +485,7 @@ export default function Dashboard() {
                 onClick={() => {
                   setShowModal(false);
                   setEditingTransaction(null);
-                  resetForm();
+                  reset_form();
                 }}
                 className={styles.closeButton}
               >
@@ -497,7 +493,7 @@ export default function Dashboard() {
               </button>
             </div>
             
-            <form onSubmit={editingTransaction ? handleUpdateTransaction : handleSubmit} className={styles.modalBody}>
+            <form onSubmit={editingTransaction ? update_transaction : submit} className={styles.modalBody}>
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Transaction Type:</label>
                 <div className={styles.toggleGroup}>
@@ -527,7 +523,7 @@ export default function Dashboard() {
                 <select
                   name="accountId"
                   value={formData.accountId}
-                  onChange={handleInputChange}
+                  onChange={input_change}
                   className={`${styles.formControl} ${styles.selectControl}`}
                   required
                 >
@@ -543,19 +539,19 @@ export default function Dashboard() {
                 <select
                   name="categoryId"
                   value={formData.categoryId}
-                  onChange={handleInputChange}
+                  onChange={input_change}
                   className={`${styles.formControl} ${styles.selectControl}`}
                   required
                 >
                   <option value="">Select category</option>
                   {transactionType === 'income' ? (
-                    incomeCategories.map(cat => (
+                    total_income_category.map(cat => (
                       <option key={cat.id} value={cat.id}>
                         {cat.icon} {cat.name}
                       </option>
                     ))
                   ) : (
-                    expenseCategories.map(cat => (
+                    total_expense_category.map(cat => (
                       <option key={cat.id} value={cat.id}>
                         {cat.icon} {cat.name}
                       </option>
@@ -571,7 +567,7 @@ export default function Dashboard() {
                     type="number"
                     name="amount"
                     value={formData.amount}
-                    onChange={handleInputChange}
+                    onChange={input_change}
                     className={styles.formControl}
                     placeholder="0.00"
                     min="0"
@@ -587,7 +583,7 @@ export default function Dashboard() {
                   type="date"
                   name="date"
                   value={formData.date}
-                  onChange={handleInputChange}
+                  onChange={input_change}
                   className={styles.formControl}
                   required
                 />
@@ -599,7 +595,7 @@ export default function Dashboard() {
                   type="text"
                   name="comment"
                   value={formData.comment}
-                  onChange={handleInputChange}
+                  onChange={input_change}
                   className={styles.formControl}
                   placeholder="Optional"
                 />
@@ -616,7 +612,7 @@ export default function Dashboard() {
                   <button
                     type="button"
                     className={`${styles.submitButton} ${styles.dangerButton}`}
-                    onClick={() => handleDeleteTransaction(editingTransaction.id)}
+                    onClick={() => delete_transaction(editingTransaction.id)}
                   >
                     <i className="fas fa-trash-alt"></i> Delete
                   </button>
@@ -627,7 +623,6 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Модальное окно для добавления счета */}
       {showAccountModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
@@ -641,7 +636,7 @@ export default function Dashboard() {
               </button>
             </div>
             
-            <form onSubmit={handleAddAccount} className={styles.modalBody}>
+            <form onSubmit={add_account} className={styles.modalBody}>
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Account Name:</label>
                 <input

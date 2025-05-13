@@ -1,5 +1,5 @@
 import API from '../../api/api';
-import { fetchAccounts } from './accountActions';
+import { get_accounts_action } from './accountActions';
 import {
   FETCH_TRANSACTIONS_REQUEST,
   FETCH_TRANSACTIONS_SUCCESS,
@@ -17,7 +17,7 @@ import {
 } from '../types';
 
 
-export const fetchTransactions = (userId) => async (dispatch) => {
+export const get_transactions_action = (userId) => async (dispatch) => {
   dispatch({ type: FETCH_TRANSACTIONS_REQUEST });
   try {
     const response = await API.get(`/transactions?userId=${userId}`);
@@ -33,17 +33,15 @@ export const fetchTransactions = (userId) => async (dispatch) => {
   }
 };
 
-export const addTransaction = (transactionData) => async (dispatch, getState) => {
+export const add_transaction_action = (transactionData) => async (dispatch, getState) => {
   dispatch({ type: ADD_TRANSACTION_REQUEST });
   try {
-    // Создаем транзакцию
     const txResponse = await API.post('/transactions', transactionData);
     dispatch({
       type: ADD_TRANSACTION_SUCCESS,
       payload: txResponse.data,
     });
 
-    // Обновляем баланс счета
     const { accountId } = transactionData;
     const account = getState().accounts.data.find(acc => acc.id === accountId);
     const newBalance = (account.balance || 0) + txResponse.data.amount;
@@ -66,15 +64,13 @@ export const addTransaction = (transactionData) => async (dispatch, getState) =>
   }
 };
 
-export const updateTransaction = (transactionData) => async (dispatch, getState) => {
+export const update_transaction_action = (transactionData) => async (dispatch, getState) => {
   dispatch({ type: UPDATE_TRANSACTION_REQUEST });
   
   try {
-    // 1. Получаем текущее состояние
-    const state = getState();
+    const state = getState(); // нынишнее состояние ;3
     const oldTransaction = state.transactions.data.find(t => t.id === transactionData.id);
     
-    // 2. Обновляем транзакцию на сервере
     const response = await API.patch(`/transactions/${transactionData.id}`, {
       accountId: transactionData.accountId,
       categoryId: transactionData.categoryId,
@@ -86,16 +82,13 @@ export const updateTransaction = (transactionData) => async (dispatch, getState)
 
     dispatch({ type: UPDATE_TRANSACTION_SUCCESS, payload: response.data });
 
-    // 3. Если изменился счёт, обновляем балансы
     if (oldTransaction && oldTransaction.accountId !== transactionData.accountId) {
-      // Старый счёт (уменьшаем на старую сумму)
       const oldAccount = state.accounts.data.find(a => a.id === oldTransaction.accountId);
       if (oldAccount) {
         const oldAccountBalance = parseFloat((oldAccount.balance - oldTransaction.amount).toFixed(2));
         await API.patch(`/accounts/${oldAccount.id}`, { balance: oldAccountBalance });
       }
 
-      // Новый счёт (увеличиваем на новую сумму)
       const newAccount = state.accounts.data.find(a => a.id === transactionData.accountId);
       if (newAccount) {
         const newAccountBalance = parseFloat((newAccount.balance + transactionData.amount).toFixed(2));
@@ -104,7 +97,7 @@ export const updateTransaction = (transactionData) => async (dispatch, getState)
     }
 
     // 4. Обновляем список счетов
-    dispatch(fetchAccounts(transactionData.userId));
+    dispatch(get_accounts_action(transactionData.userId));
     
     return response.data;
   } catch (error) {
@@ -113,7 +106,7 @@ export const updateTransaction = (transactionData) => async (dispatch, getState)
   }
 };
 
-export const deleteTransaction = (transactionId) => async (dispatch, getState) => {
+export const delete_transaction_action = (transactionId) => async (dispatch, getState) => {
   dispatch({ type: DELETE_TRANSACTION_REQUEST });
   
   try {
@@ -148,8 +141,8 @@ export const deleteTransaction = (transactionId) => async (dispatch, getState) =
     });
     
     // 5. Получаем свежие данные (опционально, можно убрать если все обновляется локально)
-    dispatch(fetchAccounts(transaction.userId));
-    dispatch(fetchTransactions(transaction.userId));
+    dispatch(get_accounts_action(transaction.userId));
+    dispatch(get_transactions_action(transaction.userId));
     
   } catch (error) {
     dispatch({

@@ -27,6 +27,13 @@
       "password": "1",
       "name": "toma",
       "currency": "KZT"
+    },
+    {
+      "id": "9dfe",
+      "email": "arusha@mail.ru",
+      "password": "1",
+      "name": "arusha",
+      "currency": "KZT"
     }
   ],
   "accounts": [
@@ -125,6 +132,39 @@
       "balance": 0,
       "userId": "7911",
       "createdAt": "2025-05-12T22:43:31.817Z"
+    },
+    {
+      "id": "3fb8",
+      "name": "Wallet",
+      "icon": "money-bill-wave",
+      "balance": 0,
+      "userId": "9dfe",
+      "createdAt": "2025-05-13T03:27:21.724Z"
+    },
+    {
+      "id": "146c",
+      "name": "Investments",
+      "icon": "chart-line",
+      "balance": 0,
+      "userId": "9dfe",
+      "createdAt": "2025-05-13T03:27:21.724Z"
+    },
+    {
+      "id": "9145",
+      "name": "Bank Card",
+      "icon": "credit-card",
+      "balance": 0,
+      "userId": "9dfe",
+      "createdAt": "2025-05-13T03:27:21.724Z"
+    },
+    {
+      "id": "db90",
+      "name": "554",
+      "icon": "wallet",
+      "balance": 0,
+      "currency": "RUB",
+      "userId": "9dfe",
+      "createdAt": "2025-05-13T03:55:45.624Z"
     }
   ],
   "transactions": [
@@ -223,6 +263,42 @@
       "createdAt": "2025-05-12T22:10:38.011Z",
       "category": "Shopping",
       "categoryId": "default_shopping"
+    },
+    {
+      "id": "fdde",
+      "userId": "9dfe",
+      "accountId": "146c",
+      "amount": 5000,
+      "date": "2025-05-13",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-13T04:12:35.877Z",
+      "category": "Scholarship",
+      "categoryId": "default_scholarship"
+    },
+    {
+      "id": "8c7d",
+      "userId": "9dfe",
+      "accountId": "146c",
+      "amount": 555,
+      "date": "2025-05-13",
+      "comment": "",
+      "type": "income",
+      "createdAt": "2025-05-13T04:13:51.422Z",
+      "category": "Other",
+      "categoryId": "default_other_income"
+    },
+    {
+      "id": "6c71",
+      "userId": "9dfe",
+      "accountId": "146c",
+      "amount": -1000000,
+      "date": "2025-05-13",
+      "comment": "",
+      "type": "expense",
+      "createdAt": "2025-05-13T04:14:30.851Z",
+      "category": "Groceries",
+      "categoryId": "default_products"
     }
   ],
   "categories": [

@@ -10,7 +10,7 @@ import {
 } from '../types';
 import { toast } from 'react-toastify';
 
-export const fetchAccounts = (userId) => async (dispatch) => {
+export const get_accounts_action = (userId) => async (dispatch) => {
   dispatch({ type: FETCH_ACCOUNTS_REQUEST });
   try {
     const response = await API.get(`/accounts?userId=${userId}`);
@@ -27,7 +27,7 @@ export const fetchAccounts = (userId) => async (dispatch) => {
   }
 };
 
-export const addAccount = (accountData) => async (dispatch) => {
+export const add_account_action = (accountData) => async (dispatch) => {
   dispatch({ type: ADD_ACCOUNT_REQUEST });
   try {
     const response = await API.post('/accounts', accountData);

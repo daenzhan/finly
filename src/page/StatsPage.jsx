@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Statistics from '../components/Stats';
 import { deleteCategory, fetchCategories } from '../redux/actions/categoryActions';
-import { fetchTransactions } from '../redux/actions/transactionActions';
+import { get_transactions_action } from '../redux/actions/transactionActions';
 import styles from '../styles/StatsPage.module.css';
 
 const StatsPage = () => {
@@ -23,7 +23,7 @@ const StatsPage = () => {
 
   useEffect(() => {
     if (user?.id) {
-      dispatch(fetchTransactions(user.id));
+      dispatch(get_transactions_action(user.id));
       dispatch(fetchCategories(user.id));
     }
   }, [dispatch, user?.id]);
